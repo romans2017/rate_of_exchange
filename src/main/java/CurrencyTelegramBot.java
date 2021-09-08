@@ -6,15 +6,37 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 public class CurrencyTelegramBot extends TelegramLongPollingBot {
+
+    private final String botName;
+    private final String botToken;
+
+    public CurrencyTelegramBot() throws Exception {
+        super();
+        /*
+        имя и токен бота должны хранится в текстовом файле \src\main\resources\botCredentials.ctxt
+        в файле должна быть одна строка, в которой имя бота и токен разделены пробелом. Например:
+        MyBot 12341241:gebsdfsbsdfbdsf
+        Если файла не будет или файл не подойдет под указанные условия, то будет исключение, бот не запустится
+         */
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(".\\src\\main\\resources\\botCredentials.ctxt"))) {
+            String[] botCredentials = bufferedReader.readLine().split(" ");
+            botName = botCredentials[0];
+            botToken = botCredentials[1];
+        }
+    }
+
     @Override
     public String getBotUsername() {
-        return "currensyChatBot";
+        return botName;
     }
 
     @Override
     public String getBotToken() {
-        return "1997525709:AAEb3Ei0W4taOMXgZt7-1P8-F5wUlQt2FrE";
+        return botToken;
     }
 
     @Override
@@ -35,7 +57,14 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     }
 
     public static void main(String[] args) throws TelegramApiException {
-        CurrencyTelegramBot telegaBot = new CurrencyTelegramBot();
+        CurrencyTelegramBot telegaBot;
+        try {
+            telegaBot = new CurrencyTelegramBot();
+        } catch (Exception e) {
+            System.out.println("Failed to initialize chat bot!!");
+            e.printStackTrace();
+            return;
+        }
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(telegaBot);
     }
