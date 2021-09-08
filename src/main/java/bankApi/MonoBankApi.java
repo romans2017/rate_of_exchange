@@ -1,0 +1,4 @@
+package bankApi;
+
+class MonobankApi {
+}
