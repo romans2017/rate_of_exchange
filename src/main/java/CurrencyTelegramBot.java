@@ -5,6 +5,8 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import userProfiles.ProfileSettings;
+import userProfiles.Profiles;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,6 +15,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
 
     private final String botName;
     private final String botToken;
+    private final Profiles profiles;
 
     public CurrencyTelegramBot() throws Exception {
         super();
@@ -27,6 +30,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
             botName = botCredentials[0];
             botToken = botCredentials[1];
         }
+        profiles = Profiles.getInstance();
     }
 
     @Override
@@ -43,10 +47,14 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             Message message = update.getMessage();
+            String chatId = message.getChatId().toString();
+
+            //currentProfileSettings - объект, хранящий настройки текущего пользователя
+            ProfileSettings currentProfileSettings = profiles.getProfileSettings(chatId);
             try {
                 execute(SendMessage
                         .builder()
-                        .chatId(message.getChatId().toString())
+                        .chatId(chatId)
                         .text("It's alive!!!")
                         .build());
             } catch (TelegramApiException e) {
