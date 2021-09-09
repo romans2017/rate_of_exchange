@@ -31,6 +31,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
             botToken = botCredentials[1];
         }
         profiles = Profiles.getInstance();
+        profiles.SchedulerSaveToFile();
     }
 
     @Override
