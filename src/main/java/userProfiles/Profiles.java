@@ -26,9 +26,7 @@ public class Profiles {
 
     public ProfileSettings getProfileSettings(String chatId) {
 
-        return Optional.
-                of(mapProfiles.get(chatId)).
-                orElse(getDefaultProfileSettings(chatId));
+        return Optional.ofNullable(mapProfiles.get(chatId)).orElse(getDefaultProfileSettings(chatId));
     }
 
     public ProfileSettings getDefaultProfileSettings(String chatId) {
