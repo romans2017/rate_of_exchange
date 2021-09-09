@@ -22,7 +22,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         MyBot 12341241:gebsdfsbsdfbdsf
         Если файла не будет или файл не подойдет под указанные условия, то будет исключение, бот не запустится
          */
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(".\\src\\main\\resources\\botCredentials.ctxt"))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/botCredentials.txt"))) {
             String[] botCredentials = bufferedReader.readLine().split(" ");
             botName = botCredentials[0];
             botToken = botCredentials[1];

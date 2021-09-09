@@ -1,4 +1,4 @@
 package bankApi;
 
-class MonobankApi {
+public class MonoBankApi {
 }
