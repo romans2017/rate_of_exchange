@@ -6,11 +6,11 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Profiles {
 
-    private ConcurrentMap<String, ProfileSettings> profiles;
+    private final ConcurrentMap<String, ProfileSettings> mapProfiles;
     private static Profiles instance;
 
     private Profiles() {
-        profiles = new ConcurrentHashMap<>();
+        mapProfiles = new ConcurrentHashMap<>();
     }
 
     public static Profiles getInstance() {
@@ -21,20 +21,20 @@ public class Profiles {
     }
 
     public void updateProfileSettings(String chatId, ProfileSettings profileSettings) {
-        profiles.put(chatId, profileSettings);
+        mapProfiles.put(chatId, profileSettings);
     }
 
     public ProfileSettings getProfileSettings(String chatId) {
+
         return Optional.
-                of(profiles.get(chatId)).
-                orElse(new ProfileSettings());
+                of(mapProfiles.get(chatId)).
+                orElse(getDefaultProfileSettings(chatId));
     }
 
-    public void removeProfileSettings(String chatId) {
-        profiles.remove(chatId);
-    }
+    public ProfileSettings getDefaultProfileSettings(String chatId) {
 
-    public ProfileSettings getDefaultProfileSettings() {
-        return new ProfileSettings();
+        ProfileSettings profileSettings = new ProfileSettings();
+        updateProfileSettings(chatId, profileSettings);
+        return profileSettings;
     }
 }
