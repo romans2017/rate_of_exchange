@@ -41,7 +41,7 @@ public class PrivatBankApi {
         return result;
     }
 
-    private static class PrivatBankCurrency {
+    public static class PrivatBankCurrency {
         String currency;             //Валюта сделки
         String baseCurrency;         //Базовая валюта
         float saleRate;              //Курс продажи ПриватБанка
