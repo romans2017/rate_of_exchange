@@ -12,7 +12,7 @@ import java.util.*;
 public class PrivatBankApi {
 
     private static final String GET_URL =
-            "https://api.privatbank.ua/p24api/exchange_rates?json&date="; //Архив курсов валют ПриватБанка
+            "https://api.privatbank.ua/p24api/exchange_rates?json&date=01.12.2014"; //Архив курсов валют ПриватБанка
     private static final URI uri =
             URI.create(GET_URL + new SimpleDateFormat("yyyyMMdd").format(new Date()));
 
