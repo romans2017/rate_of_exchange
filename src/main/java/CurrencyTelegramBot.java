@@ -62,6 +62,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
             }
         }
         System.out.println("It's alive!!!");
+
     }
 
     public static void main(String[] args) throws TelegramApiException {

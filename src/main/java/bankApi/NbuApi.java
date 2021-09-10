@@ -10,9 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class NbuApi {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        getListOfCurrenciesRate();
-    }
 
     private static final String GET_URL = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchangenew?json?date=";
     private static final URI uri = URI.create(GET_URL + new SimpleDateFormat("yyyyMMdd").format(new Date()));
