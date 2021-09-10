@@ -55,7 +55,7 @@ public class Profiles implements Serializable {
      * сохраняет текущий экземпляр Profiles в сериализованный файл по определенному расписанию (каждые 5 минут)
      */
     public void SchedulerSaveToFile() {
-        Timer timer = new Timer();
+        Timer timer = new Timer(true);
         timer.schedule(new TimerTask() {
             @Override
             public void run() {

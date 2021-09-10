@@ -1,3 +1,5 @@
+import bankApi.BankEnum;
+import facade.CashApiRequests;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -16,6 +18,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     private final String botName;
     private final String botToken;
     private final Profiles profiles;
+    private final CashApiRequests cashApiRequests;
 
     public CurrencyTelegramBot() throws Exception {
         super();
@@ -30,8 +33,14 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
             botName = botCredentials[0];
             botToken = botCredentials[1];
         }
+
+        //чтение (если есть откуда), создание дефолтных и запись в файл по расписанию профилей пользователей с настройками
         profiles = Profiles.getInstance();
         profiles.SchedulerSaveToFile();
+
+        //запрос банков и запись ответов в мапу-кэш по расписанию
+        cashApiRequests = CashApiRequests.getInstance();
+        cashApiRequests.cashing();
     }
 
     @Override
