@@ -40,11 +40,11 @@ public class CashApiRequests {
                 List<PrivatBankApi.PrivatBankCurrency> responsePrivat = null;
                 try {
                     responseNBU = NbuApi.getListOfCurrenciesRate();
-                } catch (IOException | InterruptedException ignored) {
+                } catch (Exception ignored) {
                 }
                 try {
                     responsePrivat = PrivatBankApi.getListOfCurrenciesRate();
-                } catch (IOException | InterruptedException ignored) {
+                } catch (Exception ignored) {
                 }
 
                 locker.writeLock().lock();
