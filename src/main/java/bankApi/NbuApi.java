@@ -13,7 +13,7 @@ public class NbuApi {
     private static final String GET_URL = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchangenew?json?date=";
     private static final URI uri = URI.create(GET_URL + new SimpleDateFormat("yyyyMMdd").format(new Date()));
 
-    public static List<NbuCurrency> getListOfCurrenciesRate() throws IOException, InterruptedException {
+    public static List<Currency> getListOfCurrenciesRate() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
 
@@ -28,11 +28,11 @@ public class NbuApi {
         }.getType());
 
 
-        List<NbuCurrency> result = new ArrayList<>();
+        List<Currency> result = new ArrayList<>();
         for (NbuCurrency nbuCurrency : currencies) {
-            for (CurrencyEnum currencyEnum : CurrencyEnum.values()) {
-                if (nbuCurrency.getCc().equals(currencyEnum.getValue())) {
-                    result.add(nbuCurrency);
+            for (CurrencyEnum currency : CurrencyEnum.values()) {
+                if (currency.getValue().equals(nbuCurrency.getCc())) {
+                    result.add(new Currency(currency, nbuCurrency.getRate(), nbuCurrency.getRate()));
                 }
             }
         }

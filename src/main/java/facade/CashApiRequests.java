@@ -39,7 +39,7 @@ public class CashApiRequests {
                 List<NbuApi.NbuCurrency> responseNBU = null;
                 List<PrivatBankApi.PrivatBankCurrency> responsePrivat = null;
                 try {
-                    responseNBU = NbuApi.getListOfCurrenciesRate();
+//                    responseNBU = NbuApi.getListOfCurrenciesRate();
                 } catch (Exception ignored) {
                 }
                 try {
