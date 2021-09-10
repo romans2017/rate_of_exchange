@@ -28,8 +28,9 @@ out/
 *.iml
 *.ipr
 *.iws
-
+src/main/resources/
 target/
+pom.xml
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
