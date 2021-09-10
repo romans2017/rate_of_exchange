@@ -40,7 +40,7 @@ public class NbuApi {
         return result;
     }
 
-    private static class NbuCurrency {
+    public static class NbuCurrency {
         int r030;               //Цифровой ISO код валюты
         String txt;             //Название валюты на украинском
         float rate;             //Цена НБУ
