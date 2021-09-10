@@ -16,7 +16,8 @@ public class MonoBankApi {
 
     private static final String CURRENCY_URL = "https://api.monobank.ua/bank/currency";
 
-    public static List<MonoBankCurrency> getListOfCurrenciesRateMonoBank() throws IOException, InterruptedException {
+    public static List<MonoBankCurrency> getListOfCurrenciesRateMonoBank()
+            throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         Gson gson = new Gson();
 
