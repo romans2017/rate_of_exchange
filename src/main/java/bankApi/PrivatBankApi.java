@@ -12,7 +12,7 @@ import java.util.*;
 public class PrivatBankApi {
 
     private static final String GET_URL =
-            "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5"; //Наличный курс ПриватБанка (в отделениях)
+            "https://api.privatbank.ua/p24api/exchange_rates?json&date="; //Архив курсов валют ПриватБанка
     private static final URI uri =
             URI.create(GET_URL + new SimpleDateFormat("yyyyMMdd").format(new Date()));
 
@@ -31,8 +31,8 @@ public class PrivatBankApi {
 
         List<PrivatBankCurrency> result = new ArrayList<>();
         for (PrivatBankCurrency currency : currencies) {
-            for (CurrencyEnum value : CurrencyEnum.values()) {
-                if (currency.getCcy().equals(value.getValue())) {
+            for (CurrencyEnum currencyEnum : CurrencyEnum.values()) {
+                if (currency.getCurrency().equals(currencyEnum.getValue())) {
                     result.add(currency);
                 }
             }
@@ -42,40 +42,34 @@ public class PrivatBankApi {
     }
 
     private static class PrivatBankCurrency {
-        String ccy;              //Код валюты
-        String base_ccy;         //Код национальной валюты
-        float buy;               //Курс покупки
-        float sale;              //Курс продажи
-        long date;
+        String currency;             //Валюта сделки
+        String baseCurrency;         //Базовая валюта
+        float saleRate;              //Курс продажи ПриватБанка
+        float purchaseRate;          //Курс покупки ПриватБанка
 
-        public String getCcy() {
-            return ccy;
+        public String getCurrency() {
+            return currency;
         }
 
-        public String getBase_ccy() {
-            return base_ccy;
+        public String getBaseCurrency() {
+            return baseCurrency;
         }
 
-        public float getBuy() {
-            return buy;
+        public float getSaleRate() {
+            return saleRate;
         }
 
-        public float getSale() {
-            return sale;
-        }
-
-        public long getDate() {
-            return date;
+        public float getPurchaseRate() {
+            return purchaseRate;
         }
 
         @Override
         public String toString() {
             return "PrivatBankCurrency{" +
-                    "ccy='" + ccy + '\'' +
-                    ", base_ccy='" + base_ccy + '\'' +
-                    ", buy=" + buy +
-                    ", sale=" + sale +
-                    ", date=" + date +
+                    "currency='" + currency + '\'' +
+                    ", baseCurrency='" + baseCurrency + '\'' +
+                    ", saleRate=" + saleRate +
+                    ", purchaseRate=" + purchaseRate +
                     '}';
         }
     }
