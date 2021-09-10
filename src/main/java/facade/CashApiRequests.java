@@ -2,13 +2,10 @@ package facade;
 
 import bankApi.BankEnum;
 import bankApi.NbuApi;
-import userProfiles.Profiles;
+import bankApi.PrivatBankApi;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -40,12 +37,19 @@ public class CashApiRequests {
             @Override
             public void run() {
                 List<NbuApi.NbuCurrency> responseNBU = null;
+                List<PrivatBankApi.PrivatBankCurrency> responsePrivat = null;
                 try {
                     responseNBU = NbuApi.getListOfCurrenciesRate();
                 } catch (IOException | InterruptedException ignored) {
                 }
+                try {
+                    responsePrivat = PrivatBankApi.getListOfCurrenciesRate();
+                } catch (IOException | InterruptedException ignored) {
+                }
+
                 locker.writeLock().lock();
                 cashedData.put(BankEnum.NBU, responseNBU);
+                cashedData.put(BankEnum.PRIVATBANK, responsePrivat);
                 locker.writeLock().unlock();
             }
         }, 1000L, 5L * 60L * 1000L);
