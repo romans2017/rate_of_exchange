@@ -5,7 +5,6 @@ import bankApi.CurrencyEnum;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 public class ProfileSettings implements Serializable {
     private int afterComma; //кол-во знаков после запятой
@@ -47,5 +46,21 @@ public class ProfileSettings implements Serializable {
     public ProfileSettings setHourNotification(int hourNotification) {
         this.hourNotification = hourNotification;
         return this;
+    }
+
+    public int getAfterComma() {
+        return afterComma;
+    }
+
+    public List<BankEnum> getBanks() {
+        return banks;
+    }
+
+    public List<CurrencyEnum> getCurrencies() {
+        return currencies;
+    }
+
+    public int getHourNotification() {
+        return hourNotification;
     }
 }
