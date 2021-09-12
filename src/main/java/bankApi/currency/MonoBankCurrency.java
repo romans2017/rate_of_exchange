@@ -5,9 +5,9 @@ public class MonoBankCurrency {
     private int currencyCodeA;
     private int currencyCodeB;
     private long date;
-    private Double rateSell;
-    private Double rateBuy;
-    private Double rateCross;
+    private float rateSell;
+    private float rateBuy;
+    private float rateCross;
 
     public int getCurrencyCodeA() {
         return currencyCodeA;
@@ -21,15 +21,15 @@ public class MonoBankCurrency {
         return date;
     }
 
-    public Double getRateSell() {
+    public float getRateSell() {
         return rateSell;
     }
 
-    public Double getRateBuy() {
+    public float getRateBuy() {
         return rateBuy;
     }
 
-    public Double getRateCross() {
+    public float getRateCross() {
         return rateCross;
     }
 
@@ -45,15 +45,15 @@ public class MonoBankCurrency {
         this.date = date;
     }
 
-    public void setRateSell(Double rateSell) {
+    public void setRateSell(float rateSell) {
         this.rateSell = rateSell;
     }
 
-    public void setRateBuy(Double rateBuy) {
+    public void setRateBuy(float rateBuy) {
         this.rateBuy = rateBuy;
     }
 
-    public void setRateCross(Double rateCross) {
+    public void setRateCross(float rateCross) {
         this.rateCross = rateCross;
     }
 
