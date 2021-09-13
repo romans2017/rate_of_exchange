@@ -1,16 +1,14 @@
 package userProfiles;
 
 import java.io.*;
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class Profiles implements Serializable {
 
-    private final ConcurrentMap<String, ProfileSettings> mapProfiles;
     private static Profiles instance;
+    private final ConcurrentMap<String, ProfileSettings> mapProfiles;
 
     private Profiles() {
         mapProfiles = new ConcurrentHashMap<>();
@@ -34,13 +32,19 @@ public class Profiles implements Serializable {
      * получает ProfileSettings из мапы или, если нет - создает новый, возвращает его и добавляет в мапу
      */
     public ProfileSettings getProfileSettings(String chatId) {
-
         return Optional
                 .ofNullable(mapProfiles.get(chatId))
                 .orElse(getDefaultProfileSettings(chatId));
     }
 
-    private void updateProfileSettings(String chatId, ProfileSettings profileSettings) {
+    /**
+     * получает все ProfileSettings из мапы
+     */
+    public Map<String, ProfileSettings> getAllProfileSettings() {
+        return new HashMap<>(mapProfiles);
+    }
+
+    public void updateProfileSettings(String chatId, ProfileSettings profileSettings) {
         mapProfiles.put(chatId, profileSettings);
     }
 
