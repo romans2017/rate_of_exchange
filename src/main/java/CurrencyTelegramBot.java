@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -80,31 +81,64 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
 
     private void messageHandler(Message message) {
         if (message.hasText()) {
-            if (message.getText().equals("/start")) {
-                String chatId = message.getChatId().toString();
-                try {
-                    List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-                    buttons.add(Arrays.asList(InlineKeyboardButton.builder()
-                            .callbackData("Get")
-                            .text("Получить инфо")
-                            .build()));
-                    buttons.add(Arrays.asList(InlineKeyboardButton.builder()
-                            .text("Настройки")
-                            .callbackData("Settings")
-                            .build()));
-                    execute(
-                            SendMessage.builder()
-                                    .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
-                                    .chatId(chatId)
-                                    .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                                    .build());
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
+            switch (message.getText()) {
+                case "/start":
+                    String chatId = message.getChatId().toString();
+                    try {
+                        List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+                        buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                                .callbackData("Get")
+                                .text("Получить инфо")
+                                .build()));
+                        buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                                .text("Настройки")
+                                .callbackData("Settings")
+                                .build()));
+                        execute(
+                                SendMessage.builder()
+                                        .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
+                                        .chatId(chatId)
+                                        .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                                        .build());
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
+                case "9:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(9);
+                    break;
+                case "10:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(10);
+                    break;
+                case "11:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(11);
+                    break;
+                case "12:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(12);
+                    break;
+                case "13:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(13);
+                    break;
+                case "14:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(14);
+                    break;
+                case "15:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(15);
+                    break;
+                case "16:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(16);
+                    break;
+                case "17:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(17);
+                    break;
+                case "18:00":
+                    profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(18);
+                    break;
 
-                }
             }
         }
+
     }
+
 
     private void callBackQueryHandler(CallbackQuery callbackQuery) {
 
@@ -210,74 +244,81 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
-//            case "Time_of_notification":
-//                List<List<InlineKeyboardButton>> buttonNotif = new ArrayList<>();
-//                List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>();
-//                List<InlineKeyboardButton> keyboardButtonsRow2 = new ArrayList<>();
-//                List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>();
-//                List<InlineKeyboardButton> keyboardButtonsRow4 = new ArrayList<>();
-//                keyboardButtonsRow1.add(KeyboardRow.
-//                        .text(NotificationEnum.Not9.time)
-//                        .callbackData("Notif:9")
-//                        .build());
-//                keyboardButtonsRow1.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not10.time)
-//                        .callbackData("Notif:10")
-//                        .build());
-//                keyboardButtonsRow1.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not11.time)
-//                        .callbackData("Notif:11")
-//                        .build());
-//                keyboardButtonsRow2.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not12.time)
-//                        .callbackData("Notif:12")
-//                        .build());
-//                keyboardButtonsRow2.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not13.time)
-//                        .callbackData("Notif:13")
-//                        .build());
-//                keyboardButtonsRow2.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not14.time)
-//                        .callbackData("Notif:14")
-//                        .build());
-//                keyboardButtonsRow3.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not15.time)
-//                        .callbackData("Notif:15")
-//                        .build());
-//                keyboardButtonsRow3.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not16.time)
-//                        .callbackData("Notif:16")
-//                        .build());
-//                keyboardButtonsRow3.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not17.time)
-//                        .callbackData("Notif:17")
-//                        .build());
-//                keyboardButtonsRow4.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not18.time)
-//                        .callbackData("Notif:18")
-//                        .build());
-//                keyboardButtonsRow4.add(InlineKeyboardButton.builder()
-//                        .text("Выключить уведомления")
-//                        .callbackData("Notif_of")
-//                        .build());
-//                buttonNotif.add(keyboardButtonsRow1);
-//                buttonNotif.add(keyboardButtonsRow2);
-//                buttonNotif.add(keyboardButtonsRow3);
-//                buttonNotif.add(keyboardButtonsRow4);
-//
-//                try {
-//                    execute(EditMessageReplyMarkup.builder()
-//                            .chatId(String.valueOf(callbackQuery.getMessage().getChatId()))
-//                            .messageId(callbackQuery.getMessage().getMessageId())
-//                            .replyMarkup(ReplyKeyboardMarkup.builder().keyboard(buttonNotif).build())
-//                            .build());
-//                } catch (TelegramApiException e) {
-//                    e.printStackTrace();
-//                }
+            case "EUR":
+                List<CurrencyEnum> newCurrency = new ArrayList<>();
+                newCurrency.addAll(profiles.getProfileSettings(callbackQuery.getMessage().getChatId().toString()).getCurrencies());
+                newCurrency.add(CurrencyEnum.EUR);
+                profiles.getProfileSettings(callbackQuery.getMessage().getChatId().toString()).setCurrencies(newCurrency);
 
+                break;
+            case "Time_of_notification":
+                ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+                replyKeyboardMarkup.setResizeKeyboard(true);
+                replyKeyboardMarkup.setSelective(true);
+                replyKeyboardMarkup.setOneTimeKeyboard(true);
 
+                List<KeyboardRow> keyboard = new ArrayList<>();
+
+                KeyboardRow keyboardFirstRow = new KeyboardRow();
+                keyboardFirstRow.add(KeyboardButton.builder()
+                        .text("9:00")
+                        .build());
+                keyboardFirstRow.add(KeyboardButton.builder()
+                        .text("10:00")
+                        .build());
+                keyboardFirstRow.add(KeyboardButton.builder()
+                        .text("11:00")
+                        .build());
+
+                KeyboardRow keyboardSecondRow = new KeyboardRow();
+                keyboardSecondRow.add(KeyboardButton.builder()
+                        .text("12:00")
+                        .build());
+                keyboardSecondRow.add(KeyboardButton.builder()
+                        .text("13:00")
+                        .build());
+                keyboardSecondRow.add(KeyboardButton.builder()
+                        .text("14:00")
+                        .build());
+
+                KeyboardRow keyboardThirdRow = new KeyboardRow();
+                keyboardThirdRow.add(KeyboardButton.builder()
+                        .text("15:00")
+                        .build());
+                keyboardThirdRow.add(KeyboardButton.builder()
+                        .text("16:00")
+                        .build());
+                keyboardThirdRow.add(KeyboardButton.builder()
+                        .text("17:00")
+                        .build());
+
+                KeyboardRow keyboardFourthRow = new KeyboardRow();
+                keyboardFourthRow.add(KeyboardButton.builder()
+                        .text("18:00")
+                        .build());
+                keyboardFourthRow.add(KeyboardButton.builder()
+                        .text("Выключить уведомления")
+                        .build());
+
+                keyboard.add(keyboardFirstRow);
+                keyboard.add(keyboardSecondRow);
+                keyboard.add(keyboardThirdRow);
+                keyboard.add(keyboardFourthRow);
+                replyKeyboardMarkup.setKeyboard(keyboard);
+
+                try {
+                    execute(
+                            SendMessage.builder()
+                                    .chatId(String.valueOf(callbackQuery.getMessage().getChatId()))
+                                    .text("Выберите время уведомлений")
+                                    .replyMarkup(replyKeyboardMarkup)
+                                    .build());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
         }
     }
+
 
     private String getAfterComaButton(int current, String chatId) {
         return profiles.getProfileSettings(chatId).getAfterComma() == current ? "✅ " + current : current + "";
