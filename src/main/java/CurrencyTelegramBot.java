@@ -1,6 +1,8 @@
 import bankApi.BankEnum;
 import bankApi.CurrencyEnum;
 import facade.CashApiRequests;
+import notifier.NotificationEnum;
+import notifier.Notifier;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,6 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import userProfiles.ProfileSettings;
 import userProfiles.Profiles;
 
 import java.io.BufferedReader;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class CurrencyTelegramBot extends TelegramLongPollingBot {
 
@@ -40,11 +44,13 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         MyBot 12341241:gebsdfsbsdfbdsf
         Если файла не будет или файл не подойдет под указанные условия, то будет исключение, бот не запустится
          */
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/botCredentials.ctxt"))) {
-            String[] botCredentials = bufferedReader.readLine().split(" ");
-            botName = botCredentials[0];
-            botToken = botCredentials[1];
-        }
+//        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/botCredentials.ctxt"))) {
+//            String[] botCredentials = bufferedReader.readLine().split(" ");
+//            botName = botCredentials[0];
+//            botToken = botCredentials[1];
+//        }
+        botName = "GoitProjectDMtestbot";
+        botToken = "1907051961:AAGTB9NrTZym3LJjiZ2hsT_HK397sgf2380";
 
         //чтение (если есть откуда), создание дефолтных и запись в файл по расписанию профилей пользователей с настройками
         profiles = Profiles.getInstance();
@@ -54,6 +60,31 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         cashApiRequests = CashApiRequests.getInstance();
         cashApiRequests.cashing();
 
+        TimeUnit.SECONDS.sleep(4);
+        List<BankEnum> banklist1 = List.of(BankEnum.NBU, BankEnum.MONOBANK);
+        List<BankEnum> banklist2 = List.of(BankEnum.MONOBANK, BankEnum.NBU);
+        List<BankEnum> banklist3 = List.of(BankEnum.MONOBANK);
+        List<CurrencyEnum> currlist1 = List.of(CurrencyEnum.USD, CurrencyEnum.EUR);
+        List<CurrencyEnum> currlist2 = List.of(CurrencyEnum.RUB);
+        ProfileSettings settings1 = new ProfileSettings();
+        ProfileSettings settings2 = new ProfileSettings();
+        ProfileSettings settings3 = new ProfileSettings();
+        settings1.setBanks(banklist1);
+        settings2.setBanks(banklist2);
+        settings3.setBanks(banklist3);
+        settings1.setCurrencies(currlist1);
+        settings2.setCurrencies(currlist1);
+        settings3.setCurrencies(currlist2);
+        settings1.setAfterComma(3);
+        settings2.setAfterComma(2);
+        settings3.setAfterComma(4);
+        settings1.setHourNotification(10);
+        settings2.setHourNotification(9);
+        settings3.setHourNotification(10);
+        profiles.setProfileSettings("769076398", settings1);
+        profiles.setProfileSettings("1190950401", settings3);
+        Notifier test = new Notifier(this, cashApiRequests, profiles);
+        test.sendNotifications(NotificationEnum.Not10);
     }
 
     @Override
@@ -217,43 +248,43 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
 //                List<InlineKeyboardButton> keyboardButtonsRow3 = new ArrayList<>();
 //                List<InlineKeyboardButton> keyboardButtonsRow4 = new ArrayList<>();
 //                keyboardButtonsRow1.add(KeyboardRow.
-//                        .text(NotificationEnum.Not9.time)
+//                        .text(notifier.NotificationEnum.Not9.time)
 //                        .callbackData("Notif:9")
 //                        .build());
 //                keyboardButtonsRow1.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not10.time)
+//                        .text(notifier.NotificationEnum.Not10.time)
 //                        .callbackData("Notif:10")
 //                        .build());
 //                keyboardButtonsRow1.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not11.time)
+//                        .text(notifier.NotificationEnum.Not11.time)
 //                        .callbackData("Notif:11")
 //                        .build());
 //                keyboardButtonsRow2.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not12.time)
+//                        .text(notifier.NotificationEnum.Not12.time)
 //                        .callbackData("Notif:12")
 //                        .build());
 //                keyboardButtonsRow2.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not13.time)
+//                        .text(notifier.NotificationEnum.Not13.time)
 //                        .callbackData("Notif:13")
 //                        .build());
 //                keyboardButtonsRow2.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not14.time)
+//                        .text(notifier.NotificationEnum.Not14.time)
 //                        .callbackData("Notif:14")
 //                        .build());
 //                keyboardButtonsRow3.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not15.time)
+//                        .text(notifier.NotificationEnum.Not15.time)
 //                        .callbackData("Notif:15")
 //                        .build());
 //                keyboardButtonsRow3.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not16.time)
+//                        .text(notifier.NotificationEnum.Not16.time)
 //                        .callbackData("Notif:16")
 //                        .build());
 //                keyboardButtonsRow3.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not17.time)
+//                        .text(notifier.NotificationEnum.Not17.time)
 //                        .callbackData("Notif:17")
 //                        .build());
 //                keyboardButtonsRow4.add(InlineKeyboardButton.builder()
-//                        .text(NotificationEnum.Not18.time)
+//                        .text(notifier.NotificationEnum.Not18.time)
 //                        .callbackData("Notif:18")
 //                        .build());
 //                keyboardButtonsRow4.add(InlineKeyboardButton.builder()

@@ -40,6 +40,10 @@ public class Profiles implements Serializable {
                 .orElse(getDefaultProfileSettings(chatId));
     }
 
+    public void setProfileSettings(String chatId, ProfileSettings profileSettings) {
+        updateProfileSettings(chatId, profileSettings);
+    }
+
     private void updateProfileSettings(String chatId, ProfileSettings profileSettings) {
         mapProfiles.put(chatId, profileSettings);
     }
@@ -49,6 +53,17 @@ public class Profiles implements Serializable {
         ProfileSettings profileSettings = new ProfileSettings();
         updateProfileSettings(chatId, profileSettings);
         return profileSettings;
+    }
+
+    public ConcurrentMap<String, ProfileSettings> getChatsByHour(int hour) {
+        ConcurrentMap hourMap = new ConcurrentHashMap<>();
+        for (String key: mapProfiles.keySet()) {
+            ProfileSettings value = mapProfiles.get(key);
+            if (value.getHourNotification() == hour) {
+                hourMap.put(key, value);
+            }
+        }
+        return hourMap;
     }
 
     /**

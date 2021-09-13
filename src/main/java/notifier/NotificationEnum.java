@@ -1,3 +1,5 @@
+package notifier;
+
 public enum NotificationEnum {
 
     Not9("9:00"),
