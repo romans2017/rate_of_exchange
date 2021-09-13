@@ -35,8 +35,9 @@ public class PrivatBankApi {
         CurrencyRate currencyRate = new CurrencyRate();
         for (PrivatBankCurrency currency : currencies) {
             for (CurrencyEnum currencyEnum : CurrencyEnum.values()) {
-                if (currency.getCurrency().equals(currencyEnum.getValue())) {
-                    currencyRate.setRate(currencyEnum, new CurrencyRate.Rate(currency.getSaleRate(), currency.getPurchaseRate()));
+                if (currency.getExchangeRate().get(1).getCurrency().equals(currencyEnum.getValue())) {
+                    currencyRate.setRate(currencyEnum, new CurrencyRate.Rate(currency.getExchangeRate().get(4)
+                            .getSaleRate(), currency.getExchangeRate().get(5).getPurchaseRate()));
                 }
             }
         }
@@ -45,34 +46,85 @@ public class PrivatBankApi {
     }
 
     public static class PrivatBankCurrency {
-        String currency;             //Валюта сделки
-        String baseCurrency;         //Базовая валюта
-        float saleRate;              //Курс продажи ПриватБанка
-        float purchaseRate;          //Курс покупки ПриватБанка
 
-        public String getCurrency() {
-            return currency;
+        String date;
+        String bank;
+        int baseCurrency;
+        String baseCurrencyLit;
+        List<ExchangeRate> exchangeRate;
+        static class ExchangeRate {
+            String baseCurrency; //Базовая валюта (UAH)
+            String currency; // Валюта сделки (USD, EUR, RUR, CHF, GBP, PLZ, SEK, XAU, CAD)
+            float saleRateNB; //курс продажи НБУ
+            float purchaseRateNB; //курс покупки НБУ
+            float saleRate; //курс продажи Привата
+            float purchaseRate; //курс покупки Привата
+
+            public String getBaseCurrency() {
+                return baseCurrency;
+            }
+
+            public String getCurrency() {
+                return currency;
+            }
+
+            public float getSaleRateNB() {
+                return saleRateNB;
+            }
+
+            public float getPurchaseRateNB() {
+                return purchaseRateNB;
+            }
+
+            public float getSaleRate() {
+                return saleRate;
+            }
+
+            public float getPurchaseRate() {
+                return purchaseRate;
+            }
+
+            @Override
+            public String toString() {
+                return "ExchangeRate{" +
+                        "baseCurrency='" + baseCurrency + '\'' +
+                        ", currency='" + currency + '\'' +
+                        ", saleRateNB=" + saleRateNB +
+                        ", purchaseRateNB=" + purchaseRateNB +
+                        ", saleRate=" + saleRate +
+                        ", purchaseRate=" + purchaseRate +
+                        '}';
+            }
         }
 
-        public String getBaseCurrency() {
+        public String getDate() {
+            return date;
+        }
+
+        public String getBank() {
+            return bank;
+        }
+
+        public int getBaseCurrency() {
             return baseCurrency;
         }
 
-        public float getSaleRate() {
-            return saleRate;
+        public String getBaseCurrencyLit() {
+            return baseCurrencyLit;
         }
 
-        public float getPurchaseRate() {
-            return purchaseRate;
+        public List<ExchangeRate> getExchangeRate() {
+            return exchangeRate;
         }
 
         @Override
         public String toString() {
             return "PrivatBankCurrency{" +
-                    "currency='" + currency + '\'' +
+                    "date='" + date + '\'' +
+                    ", bank='" + bank + '\'' +
                     ", baseCurrency='" + baseCurrency + '\'' +
-                    ", saleRate=" + saleRate +
-                    ", purchaseRate=" + purchaseRate +
+                    ", baseCurrencyLit='" + baseCurrencyLit + '\'' +
+                    ", exchangeRate=" + exchangeRate +
                     '}';
         }
     }
