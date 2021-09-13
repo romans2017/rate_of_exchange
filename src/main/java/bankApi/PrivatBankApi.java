@@ -1,7 +1,6 @@
 package bankApi;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import facade.CurrencyRate;
 
 import java.io.IOException;
@@ -10,6 +9,7 @@ import java.net.http.*;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PrivatBankApi {
 
@@ -29,18 +29,14 @@ public class PrivatBankApi {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        List<PrivatBankCurrency> currencies = gson.fromJson(response.body(), new TypeToken<List<PrivatBankCurrency>>() {
-        }.getType());
-
         CurrencyRate currencyRate = new CurrencyRate();
-        for (PrivatBankCurrency currency : currencies) {
-            for (CurrencyEnum currencyEnum : CurrencyEnum.values()) {
-                if (currency.getExchangeRate().get(1).getCurrency().equals(currencyEnum.getValue())) {
-                    currencyRate.setRate(currencyEnum, new CurrencyRate.Rate(currency.getExchangeRate().get(4)
-                            .getSaleRate(), currency.getExchangeRate().get(5).getPurchaseRate()));
-                }
-            }
-        }
+        List<String> listCurrencies = Arrays.stream(CurrencyEnum.values()).map(CurrencyEnum::getValue).collect(Collectors.toList());
+
+        gson.fromJson(response.body(), PrivatBankCurrency.class)
+                .getExchangeRate()
+                .stream()
+                .filter(item -> "UAH".equals(item.getBaseCurrency()) && item.getSaleRate() != 0.0f && listCurrencies.contains(item.getCurrency()))
+                .forEach(item -> currencyRate.setRate(CurrencyEnum.valueOf(item.getCurrency()), new CurrencyRate.Rate(item.getSaleRate(), item.getPurchaseRate())));
 
         return currencyRate;
     }
@@ -52,6 +48,7 @@ public class PrivatBankApi {
         int baseCurrency;
         String baseCurrencyLit;
         List<ExchangeRate> exchangeRate;
+
         static class ExchangeRate {
             String baseCurrency; //Базовая валюта (UAH)
             String currency; // Валюта сделки (USD, EUR, RUR, CHF, GBP, PLZ, SEK, XAU, CAD)
