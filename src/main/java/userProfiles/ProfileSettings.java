@@ -5,18 +5,17 @@ import bankApi.CurrencyEnum;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ProfileSettings implements Serializable {
     private int afterComma; //кол-во знаков после запятой
-    private List<BankEnum> banks; //список банков
-    private List<CurrencyEnum> currencies; // список валют
+    private Set<BankEnum> banks; //список банков
+    private Set<CurrencyEnum> currencies; // список валют
     private int hourNotification; //установленный час оповещения
 
     public ProfileSettings() {
-        banks = new ArrayList<>();
-        currencies = new ArrayList<>();
+        banks = new HashSet<>();
+        currencies = new HashSet<>();
         this.setAfterComma(2)
                 .addBank(BankEnum.PRIVATBANK)
                 .addCurrency(CurrencyEnum.USD)
@@ -34,8 +33,8 @@ public class ProfileSettings implements Serializable {
     /**
      * устанавливает банки в профиль пользователя
      */
-    public ProfileSettings setBanks(@NotNull List<BankEnum> banks) {
-        this.banks = new ArrayList<>(banks);
+    public ProfileSettings setBanks(@NotNull Collection<BankEnum> banks) {
+        this.banks = new HashSet<>(banks);
         return this;
     }
 
@@ -43,7 +42,7 @@ public class ProfileSettings implements Serializable {
      * добавляет банк в профиль пользователя
      */
     public ProfileSettings addBank(@NotNull BankEnum bank) {
-        this.banks = new ArrayList<>(banks); //на случай, если banks инициализировалось как List.of(...)
+        this.banks = new HashSet<>(banks); //на случай, если banks инициализировалось как List.of(...)
         this.banks.add(bank);
         return this;
     }
@@ -52,7 +51,7 @@ public class ProfileSettings implements Serializable {
      * удаляет банк из профиля пользователя
      */
     public ProfileSettings removeBank(@NotNull BankEnum bank) {
-        this.banks = new ArrayList<>(banks); //на случай, если banks инициализировалось как List.of(...)
+        this.banks = new HashSet<>(banks); //на случай, если banks инициализировалось как List.of(...)
         this.banks.remove(bank);
         return this;
     }
@@ -60,8 +59,8 @@ public class ProfileSettings implements Serializable {
     /**
      * устанавливает валюты в профиль пользователя
      */
-    public ProfileSettings setCurrencies(@NotNull List<CurrencyEnum> currencies) {
-        this.currencies = new ArrayList<>(currencies);
+    public ProfileSettings setCurrencies(@NotNull Collection<CurrencyEnum> currencies) {
+        this.currencies = new HashSet<>(currencies);
         return this;
     }
 
@@ -69,7 +68,7 @@ public class ProfileSettings implements Serializable {
      * добавляет валюту в профиль пользователя
      */
     public ProfileSettings addCurrency(@NotNull CurrencyEnum currency) {
-        this.currencies = new ArrayList<>(currencies); //на случай, если currencies инициализировалось как List.of(...)
+        this.currencies = new HashSet<>(currencies); //на случай, если currencies инициализировалось как List.of(...)
         this.currencies.add(currency);
         return this;
     }
@@ -78,7 +77,7 @@ public class ProfileSettings implements Serializable {
      * удаляет валюту из профиля пользователя
      */
     public ProfileSettings removeCurrency(@NotNull CurrencyEnum currency) {
-        this.currencies = new ArrayList<>(currencies); //на случай, если currencies инициализировалось как List.of(...)
+        this.currencies = new HashSet<>(currencies); //на случай, если currencies инициализировалось как List.of(...)
         this.currencies.remove(currency);
         return this;
     }
@@ -95,12 +94,12 @@ public class ProfileSettings implements Serializable {
         return afterComma;
     }
 
-    public List<BankEnum> getBanks() {
-        return new ArrayList<>(banks);
+    public Set<BankEnum> getBanks() {
+        return new HashSet<>(banks);
     }
 
-    public List<CurrencyEnum> getCurrencies() {
-        return new ArrayList<>(currencies);
+    public Set<CurrencyEnum> getCurrencies() {
+        return new HashSet<>(currencies);
     }
 
     public int getHourNotification() {

@@ -59,9 +59,10 @@ public class CashApiRequests {
     public CurrencyRate getBankResponse(BankEnum bank) {
 
         locker.readLock().lock();
-        CurrencyRate response = Optional
-                .ofNullable(cashedData.get(bank))
-                .orElse(new CurrencyRate());
+        CurrencyRate response = cashedData.get(bank);
+        if (response == null) {
+            response = new CurrencyRate();
+        }
         locker.readLock().unlock();
         return response;
     }
@@ -91,9 +92,9 @@ public class CashApiRequests {
         CashApiRequests cashApiRequests = CashApiRequests.getInstance();
         StringBuilder stringBuilder = new StringBuilder();
         String patternRounding = "%." + profileSettings.getAfterComma() + "f";
-        for (BankEnum bank: profileSettings.getBanks()) {
+        for (BankEnum bank : profileSettings.getBanks()) {
             CurrencyRate bankResponse = cashApiRequests.getBankResponse(bank);
-            for (CurrencyEnum currency: profileSettings.getCurrencies()) {
+            for (CurrencyEnum currency : profileSettings.getCurrencies()) {
                 stringBuilder
                         .append("Курс в ")
                         .append(bank.getValue())

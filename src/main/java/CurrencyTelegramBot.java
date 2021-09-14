@@ -69,21 +69,12 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        //     currentProfileSettings - объект, хранящий настройки текущего пользователя
-        /*if (update.hasMessage()) {
-            ProfileSettings currentProfileSettings = profiles.getProfileSettings(update.getMessage().getChatId().toString());
-            currentProfileSettings
-                    .addBank(BankEnum.MONOBANK)
-                    .addBank(BankEnum.NBU)
-                    .addCurrency(CurrencyEnum.EUR);
-        }*/
         if (update.hasCallbackQuery()) {
             callBackQueryHandler(update.getCallbackQuery());
         } else if (update.hasMessage()) {
             messageHandler(update.getMessage());
         }
     }
-
 
     private void messageHandler(Message message) {
         if (message.hasText()) {

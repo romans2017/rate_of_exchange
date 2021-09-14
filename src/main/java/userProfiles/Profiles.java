@@ -32,9 +32,8 @@ public class Profiles implements Serializable {
      * получает ProfileSettings из мапы или, если нет - создает новый, возвращает его и добавляет в мапу
      */
     public ProfileSettings getProfileSettings(String chatId) {
-        return Optional
-                .ofNullable(mapProfiles.get(chatId))
-                .orElse(getDefaultProfileSettings(chatId));
+        ProfileSettings current = mapProfiles.get(chatId);
+        return current == null ? getDefaultProfileSettings(chatId) : current;
     }
 
     /**
@@ -44,12 +43,11 @@ public class Profiles implements Serializable {
         return new HashMap<>(mapProfiles);
     }
 
-    public void updateProfileSettings(String chatId, ProfileSettings profileSettings) {
+    private void updateProfileSettings(String chatId, ProfileSettings profileSettings) {
         mapProfiles.put(chatId, profileSettings);
     }
 
     private ProfileSettings getDefaultProfileSettings(String chatId) {
-
         ProfileSettings profileSettings = new ProfileSettings();
         updateProfileSettings(chatId, profileSettings);
         return profileSettings;
