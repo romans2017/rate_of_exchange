@@ -16,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
+import userProfiles.ProfileSettings;
 import userProfiles.Profiles;
 
 import java.io.BufferedReader;
@@ -70,7 +71,13 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         //     currentProfileSettings - объект, хранящий настройки текущего пользователя
-        //            ProfileSettings currentProfileSettings = profiles.getProfileSettings(update.getMessage().getChatId().toString());
+        /*if (update.hasMessage()) {
+            ProfileSettings currentProfileSettings = profiles.getProfileSettings(update.getMessage().getChatId().toString());
+            currentProfileSettings
+                    .addBank(BankEnum.MONOBANK)
+                    .addBank(BankEnum.NBU)
+                    .addCurrency(CurrencyEnum.EUR);
+        }*/
         if (update.hasCallbackQuery()) {
             callBackQueryHandler(update.getCallbackQuery());
         } else if (update.hasMessage()) {
@@ -343,6 +350,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
             e.printStackTrace();
             return;
         }
+
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(telegaBot);
     }
