@@ -241,6 +241,10 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
             .text(getAfterComaButton(4, callbackQuery.getMessage().getChatId().toString()))
             .callbackData("Number:" + "4")
             .build()));
+        buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                .text("\uD83D\uDD19")
+                .callbackData("Settings")
+                .build()));
 
                try {
           execute(
@@ -263,6 +267,11 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
               .callbackData(String.valueOf(bankEnum))
               .build()));
         }
+        button.add(Arrays.asList(InlineKeyboardButton.builder()
+                .text("\uD83D\uDD19")
+                .callbackData("Settings")
+                .build()));
+
         try {
           execute(EditMessageReplyMarkup.builder()
               .chatId(String.valueOf(callbackQuery.getMessage().getChatId()))
@@ -284,6 +293,10 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 .build()));
           }
         }
+        button2.add(Arrays.asList(InlineKeyboardButton.builder()
+                .text("\uD83D\uDD19")
+                .callbackData("Settings")
+                .build()));
         try {
           execute(EditMessageReplyMarkup.builder()
               .chatId(String.valueOf(callbackQuery.getMessage().getChatId()))
