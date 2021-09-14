@@ -7,6 +7,7 @@ import userProfiles.Profiles;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Supplier;
 
 public class CashApiRequests {
 
@@ -59,10 +60,9 @@ public class CashApiRequests {
     public CurrencyRate getBankResponse(BankEnum bank) {
 
         locker.readLock().lock();
-        CurrencyRate response = cashedData.get(bank);
-        if (response == null) {
-            response = new CurrencyRate();
-        }
+        CurrencyRate response = Optional
+                .ofNullable(cashedData.get(bank))
+                .orElse(new CurrencyRate());
         locker.readLock().unlock();
         return response;
     }
