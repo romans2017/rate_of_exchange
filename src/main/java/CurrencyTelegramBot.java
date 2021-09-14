@@ -181,6 +181,28 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 }
                 break;
             case "Get":
+                try {
+                    String chatId = callbackQuery.getMessage().getChatId().toString();
+                    List<List<InlineKeyboardButton>> buttons = List.of(
+
+                            List.of(InlineKeyboardButton.builder()
+                                    .text("Получить инфо")
+                                    .callbackData("Get")
+                                    .build()),
+                            List.of(InlineKeyboardButton.builder()
+                                    .text("Настройки")
+                                    .callbackData("Settings")
+                                    .build())
+                    );
+
+                    execute(SendMessage.builder()
+                            .text(CashApiRequests.getNotificationForUser(Profiles.getInstance().getProfileSettings(chatId)))
+                            .chatId(chatId)
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
                 break;
             case "Number":
                 List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
