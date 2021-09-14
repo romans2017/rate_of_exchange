@@ -69,4 +69,8 @@ public class Profiles implements Serializable {
         }, 1000L, 5L * 60L * 1000L);
 
     }
+
+    public void setProfileSettings(String chatId, ProfileSettings profileSettings) {
+        updateProfileSettings(chatId, profileSettings);
+    }
 }
