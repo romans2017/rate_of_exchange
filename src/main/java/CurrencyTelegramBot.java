@@ -44,13 +44,11 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         MyBot 12341241:gebsdfsbsdfbdsf
         Если файла не будет или файл не подойдет под указанные условия, то будет исключение, бот не запустится
          */
-//        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/botCredentials.ctxt"))) {
-//            String[] botCredentials = bufferedReader.readLine().split(" ");
-//            botName = botCredentials[0];
-//            botToken = botCredentials[1];
-//        }
-        botName = "GoitProjectDMtestbot";
-        botToken = "1907051961:AAGTB9NrTZym3LJjiZ2hsT_HK397sgf2380";
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/botCredentials.ctxt"))) {
+            String[] botCredentials = bufferedReader.readLine().split(" ");
+            botName = botCredentials[0];
+            botToken = botCredentials[1];
+        }
 
         //чтение (если есть откуда), создание дефолтных и запись в файл по расписанию профилей пользователей с настройками
         profiles = Profiles.getInstance();
@@ -59,32 +57,6 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         //запрос банков и запись ответов в мапу-кэш по расписанию
         cashApiRequests = CashApiRequests.getInstance();
         cashApiRequests.cashing();
-
-        TimeUnit.SECONDS.sleep(4);
-        List<BankEnum> banklist1 = List.of(BankEnum.NBU, BankEnum.MONOBANK);
-        List<BankEnum> banklist2 = List.of(BankEnum.MONOBANK, BankEnum.NBU);
-        List<BankEnum> banklist3 = List.of(BankEnum.MONOBANK);
-        List<CurrencyEnum> currlist1 = List.of(CurrencyEnum.USD, CurrencyEnum.EUR);
-        List<CurrencyEnum> currlist2 = List.of(CurrencyEnum.RUB);
-        ProfileSettings settings1 = new ProfileSettings();
-        ProfileSettings settings2 = new ProfileSettings();
-        ProfileSettings settings3 = new ProfileSettings();
-        settings1.setBanks(banklist1);
-        settings2.setBanks(banklist2);
-        settings3.setBanks(banklist3);
-        settings1.setCurrencies(currlist1);
-        settings2.setCurrencies(currlist1);
-        settings3.setCurrencies(currlist2);
-        settings1.setAfterComma(3);
-        settings2.setAfterComma(2);
-        settings3.setAfterComma(4);
-        settings1.setHourNotification(10);
-        settings2.setHourNotification(9);
-        settings3.setHourNotification(10);
-        profiles.setProfileSettings("769076398", settings1);
-        profiles.setProfileSettings("1190950401", settings3);
-        Notifier test = new Notifier(this, cashApiRequests, profiles);
-        test.sendNotifications(NotificationEnum.Not10);
     }
 
     @Override
