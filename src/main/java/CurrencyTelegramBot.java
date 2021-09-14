@@ -69,84 +69,51 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     return botToken;
   }
 
-  @Override
-  public void onUpdateReceived(Update update) {
-//         currentProfileSettings - объект, хранящий настройки текущего пользователя
-//if (update.hasMessage()) {
-//            ProfileSettings currentProfileSettings = profiles.getProfileSettings(update.getMessage().getChatId().toString());
-//            currentProfileSettings
-//                    .addBank(BankEnum.MONOBANK)
-//                    .addBank(BankEnum.NBU)
-//                    .addCurrency(CurrencyEnum.EUR);
-//        }
-    if (update.hasCallbackQuery()) {
-      callBackQueryHandler(update.getCallbackQuery());
-    } else if (update.hasMessage()) {
-      messageHandler(update.getMessage());
-    }
-  }
-
-
-  private void messageHandler(Message message) {
-    if (message.hasText()) {
-      switch (message.getText()) {
-        case "/start":
-          String chatId = message.getChatId().toString();
-          try {
-            List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-            buttons.add(Arrays.asList(InlineKeyboardButton.builder()
-                .callbackData("Get")
-                .text("Получить инфо")
-                .build()));
-            buttons.add(Arrays.asList(InlineKeyboardButton.builder()
-                .text("Настройки")
-                .callbackData("Settings")
-                .build()));
-            execute(
-                SendMessage.builder()
-                    .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
-                    .chatId(chatId)
-                    .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                    .build());
-          } catch (TelegramApiException e) {
-            e.printStackTrace();
-          }
-        case "9:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(9);
-          break;
-        case "10:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(10);
-          break;
-        case "11:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(11);
-          break;
-        case "12:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(12);
-          break;
-        case "13:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(13);
-          break;
-        case "14:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(14);
-          break;
-        case "15:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(15);
-          break;
-        case "16:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(16);
-          break;
-        case "17:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(17);
-          break;
-        case "18:00":
-          profiles.getProfileSettings(message.getChatId().toString()).setHourNotification(18);
-          break;
-
-      }
+    @Override
+    public void onUpdateReceived(Update update) {
+        //     currentProfileSettings - объект, хранящий настройки текущего пользователя
+        /*if (update.hasMessage()) {
+            ProfileSettings currentProfileSettings = profiles.getProfileSettings(update.getMessage().getChatId().toString());
+            currentProfileSettings
+                    .addBank(BankEnum.MONOBANK)
+                    .addBank(BankEnum.NBU)
+                    .addCurrency(CurrencyEnum.EUR);
+        }*/
+        if (update.hasCallbackQuery()) {
+            callBackQueryHandler(update.getCallbackQuery());
+        } else if (update.hasMessage()) {
+            messageHandler(update.getMessage());
+        }
     }
 
-  }
 
+    private void messageHandler(Message message) {
+        if (message.hasText()) {
+            if (message.getText().equals("/start")) {
+                String chatId = message.getChatId().toString();
+                try {
+                    List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+                    buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                            .callbackData("Get")
+                            .text("Получить инфо")
+                            .build()));
+                    buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                            .text("Настройки")
+                            .callbackData("Settings")
+                            .build()));
+                    execute(
+                            SendMessage.builder()
+                                    .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
+                                    .chatId(chatId)
+                                    .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                                    .build());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        }
+    }
 
   private void callBackQueryHandler(CallbackQuery callbackQuery) {
 
