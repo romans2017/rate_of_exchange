@@ -37,6 +37,7 @@ public class Profiles implements Serializable {
                 .orElseGet(() -> getDefaultProfileSettings(chatId));
     }
 
+
     /**
      * получает все ProfileSettings из мапы
      */
