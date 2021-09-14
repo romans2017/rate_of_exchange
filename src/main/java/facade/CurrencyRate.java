@@ -3,6 +3,7 @@ package facade;
 import bankApi.CurrencyEnum;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 //класс нормализации ответа банка
@@ -46,8 +47,9 @@ public class CurrencyRate {
     }
 
     public CurrencyRate.Rate getRate(CurrencyEnum currency) {
-        CurrencyRate.Rate rate = mapCurrency.get(currency);
-        return rate == null ? new Rate(0f, 0f) : rate;
+        return Optional
+                .ofNullable(mapCurrency.get(currency))
+                .orElse(new Rate(0f, 0f));
     }
 
     @Override
