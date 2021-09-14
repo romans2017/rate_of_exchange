@@ -105,4 +105,14 @@ public class ProfileSettings implements Serializable {
     public int getHourNotification() {
         return hourNotification;
     }
+
+    @Override
+    public String toString() {
+        return "ProfileSettings{" +
+            "afterComma=" + afterComma +
+            ", banks=" + banks +
+            ", currencies=" + currencies +
+            ", hourNotification=" + hourNotification +
+            '}'+hashCode();
+    }
 }
