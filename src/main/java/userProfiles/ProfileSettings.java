@@ -25,7 +25,7 @@ public class ProfileSettings implements Serializable {
     /**
      * устанавливает количество знаков после запятой в профиль пользователя
      */
-    public ProfileSettings setAfterComma(int afterComma) {
+    public synchronized ProfileSettings setAfterComma(int afterComma) {
         this.afterComma = afterComma;
         return this;
     }
@@ -33,7 +33,7 @@ public class ProfileSettings implements Serializable {
     /**
      * устанавливает банки в профиль пользователя
      */
-    public ProfileSettings setBanks(@NotNull Collection<BankEnum> banks) {
+    public synchronized ProfileSettings setBanks(@NotNull Collection<BankEnum> banks) {
         this.banks = new HashSet<>(banks);
         return this;
     }
@@ -41,7 +41,7 @@ public class ProfileSettings implements Serializable {
     /**
      * добавляет банк в профиль пользователя
      */
-    public ProfileSettings addBank(@NotNull BankEnum bank) {
+    public synchronized ProfileSettings addBank(@NotNull BankEnum bank) {
         this.banks = new HashSet<>(banks); //на случай, если banks инициализировалось как List.of(...)
         this.banks.add(bank);
         return this;
@@ -50,7 +50,7 @@ public class ProfileSettings implements Serializable {
     /**
      * удаляет банк из профиля пользователя
      */
-    public ProfileSettings removeBank(@NotNull BankEnum bank) {
+    public synchronized ProfileSettings removeBank(@NotNull BankEnum bank) {
         this.banks = new HashSet<>(banks); //на случай, если banks инициализировалось как List.of(...)
         this.banks.remove(bank);
         return this;
@@ -59,7 +59,7 @@ public class ProfileSettings implements Serializable {
     /**
      * устанавливает валюты в профиль пользователя
      */
-    public ProfileSettings setCurrencies(@NotNull Collection<CurrencyEnum> currencies) {
+    public synchronized ProfileSettings setCurrencies(@NotNull Collection<CurrencyEnum> currencies) {
         this.currencies = new HashSet<>(currencies);
         return this;
     }
@@ -67,7 +67,7 @@ public class ProfileSettings implements Serializable {
     /**
      * добавляет валюту в профиль пользователя
      */
-    public ProfileSettings addCurrency(@NotNull CurrencyEnum currency) {
+    public synchronized ProfileSettings addCurrency(@NotNull CurrencyEnum currency) {
         this.currencies = new HashSet<>(currencies); //на случай, если currencies инициализировалось как List.of(...)
         this.currencies.add(currency);
         return this;
@@ -76,7 +76,7 @@ public class ProfileSettings implements Serializable {
     /**
      * удаляет валюту из профиля пользователя
      */
-    public ProfileSettings removeCurrency(@NotNull CurrencyEnum currency) {
+    public synchronized ProfileSettings removeCurrency(@NotNull CurrencyEnum currency) {
         this.currencies = new HashSet<>(currencies); //на случай, если currencies инициализировалось как List.of(...)
         this.currencies.remove(currency);
         return this;
@@ -85,24 +85,24 @@ public class ProfileSettings implements Serializable {
     /**
      * устанавливает час расписания в профиль пользователя
      */
-    public ProfileSettings setHourNotification(int hourNotification) {
+    public synchronized ProfileSettings setHourNotification(int hourNotification) {
         this.hourNotification = hourNotification;
         return this;
     }
 
-    public int getAfterComma() {
+    public synchronized int getAfterComma() {
         return afterComma;
     }
 
-    public Set<BankEnum> getBanks() {
+    public synchronized Set<BankEnum> getBanks() {
         return new HashSet<>(banks);
     }
 
-    public Set<CurrencyEnum> getCurrencies() {
+    public synchronized Set<CurrencyEnum> getCurrencies() {
         return new HashSet<>(currencies);
     }
 
-    public int getHourNotification() {
+    public synchronized int getHourNotification() {
         return hourNotification;
     }
 
