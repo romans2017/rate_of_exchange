@@ -143,6 +143,10 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .text("Время оповещений")
                             .callbackData("Time_of_notification")
                             .build()));
+                    buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                            .text("Назад")
+                            .callbackData("start_page")
+                            .build()));
 
                     execute(
                             SendMessage.builder()
@@ -201,6 +205,11 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .callbackData("Number:" + i)
                             .build()));
                 }
+                buttons.add(List.of(InlineKeyboardButton
+                        .builder()
+                        .text("Назад")
+                        .callbackData("Settings")
+                        .build()));
                 try {
                     execute(
                             EditMessageReplyMarkup.builder()
@@ -226,8 +235,8 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             int a=0;
                             if (split[i].contains("PRIVATBANK")) {
                                 if (size!=1){
-                                profiles.getProfileSettings(chatUserId).removeBank(BankEnum.PRIVATBANK);
-                                break;}
+                                    profiles.getProfileSettings(chatUserId).removeBank(BankEnum.PRIVATBANK);
+                                    break;}
                             } else {
                                 profiles.getProfileSettings(chatUserId).addBank(BankEnum.PRIVATBANK);
                                 if (i==size-1){ break;}
@@ -242,8 +251,8 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             String[] split = saved.split(",");
                             if (split[i].contains("MONOBANK")) {
                                 if (size!=1){
-                                profiles.getProfileSettings(chatUserId).removeBank(BankEnum.MONOBANK);
-                                break;}
+                                    profiles.getProfileSettings(chatUserId).removeBank(BankEnum.MONOBANK);
+                                    break;}
                             } else {
                                 profiles.getProfileSettings(chatUserId).addBank(BankEnum.MONOBANK);
                                 if (i==size-1){ break;}
@@ -256,8 +265,8 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             String[] split = saved.split(",");
                             if (split[i].contains("NBU")) {
                                 if (size!=1){
-                                profiles.getProfileSettings(chatUserId).removeBank(BankEnum.NBU);
-                               break;}
+                                    profiles.getProfileSettings(chatUserId).removeBank(BankEnum.NBU);
+                                    break;}
                             } else {
                                 profiles.getProfileSettings(chatUserId).addBank(BankEnum.NBU);
                                 if (i==size-1){ break;}
