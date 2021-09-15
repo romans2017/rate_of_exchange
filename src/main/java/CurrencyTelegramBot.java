@@ -286,6 +286,12 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .callbackData("Bank_enum:" + String.valueOf(bankEnum))
                             .build()));
                 }
+                button.add(List.of(InlineKeyboardButton
+                        .builder()
+                        .text("Назад")
+                        .callbackData("Settings")
+                        .build()));
+
 
                 try {
                     execute(EditMessageReplyMarkup.builder()
@@ -310,6 +316,11 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                                 .build()));
                     }
                 }
+                button2.add(List.of(InlineKeyboardButton
+                        .builder()
+                        .text("Назад")
+                        .callbackData("Settings")
+                        .build()));
                 try {
                     execute(EditMessageReplyMarkup.builder()
                             .chatId(chatUserId)
