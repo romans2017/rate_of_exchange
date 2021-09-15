@@ -42,6 +42,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         MyBot 12341241:gebsdfsbsdfbdsf
         Если файла не будет или файл не подойдет под указанные условия, то будет исключение, бот не запустится
          */
+
         try (BufferedReader bufferedReader = new BufferedReader(
                 new FileReader("src/main/resources/botCredentials.ctxt"))) {
             String[] botCredentials = bufferedReader.readLine().split(" ");
@@ -145,7 +146,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .build()));
                     buttons.add(Arrays.asList(InlineKeyboardButton.builder()
                             .text("Назад")
-                            .callbackData("start_page")
+                            .callbackData("Start")
                             .build()));
 
                     execute(
@@ -275,6 +276,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                         }
                         break;
                     case "start_page":
+
                         break;
                 }
 
@@ -291,7 +293,6 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                         .text("Назад")
                         .callbackData("Settings")
                         .build()));
-
 
                 try {
                     execute(EditMessageReplyMarkup.builder()
@@ -373,6 +374,27 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                                     .build());
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
+                }
+            case "Start":
+                try {
+                    List<List<InlineKeyboardButton>> buttons1 = new ArrayList<>();
+                    buttons1.add(Arrays.asList(InlineKeyboardButton.builder()
+                            .callbackData("Get")
+                            .text("Получить инфо")
+                            .build()));
+                    buttons1.add(Arrays.asList(InlineKeyboardButton.builder()
+                            .text("Настройки")
+                            .callbackData("Settings")
+                            .build()));
+                    execute(
+                            SendMessage.builder()
+                                    .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
+                                    .chatId(chatUserId)
+                                    .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons1).build())
+                                    .build());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+
                 }
         }
     }
