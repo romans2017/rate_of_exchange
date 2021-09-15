@@ -120,6 +120,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         String[] param = callbackQuery.getData().split(":");
         String action = param[0];
         String chatUserId = callbackQuery.getMessage().getChatId().toString();
+
         Integer messageUserId = callbackQuery.getMessage().getMessageId();
 
 
@@ -137,11 +138,15 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .build())));
                     buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
                             .text("Валюты")
-                            .callbackData("currencies")
+                            .callbackData("currencies:" + "start_page")
                             .build())));
                     buttons.add(Arrays.asList(InlineKeyboardButton.builder()
                             .text("Время оповещений")
                             .callbackData("Time_of_notification")
+                            .build()));
+                    buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                            .text("Назад")
+                            .callbackData("Start")
                             .build()));
 
                     execute(
@@ -201,6 +206,11 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .callbackData("Number:" + i)
                             .build()));
                 }
+                buttons.add(List.of(InlineKeyboardButton
+                        .builder()
+                        .text("Назад")
+                        .callbackData("Settings")
+                        .build()));
                 try {
                     execute(
                             EditMessageReplyMarkup.builder()
@@ -214,61 +224,63 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 break;
 
             case "Bank_enum":
-                String parametrBank = param[1];
                 int size = profiles.getProfileSettings(chatUserId).getBanks().size();
+                String parametrBank = param[1];
                 switch (parametrBank) {
-
                     case "PRIVATBANK":
-
+                        String saved = String.valueOf(profiles.getProfileSettings(chatUserId).getBanks());
+                        String[] split = saved.split(",");
                         for (int i = 0; i < size; i++) {
-                            String saved = String.valueOf(profiles.getProfileSettings(chatUserId).getBanks());
-                            String[] split = saved.split(",");
-                            int a=0;
                             if (split[i].contains("PRIVATBANK")) {
-                                if (size!=1){
-                                profiles.getProfileSettings(chatUserId).removeBank(BankEnum.PRIVATBANK);
-                                break;}
+                                if (size != 1) {
+                                    profiles.getProfileSettings(chatUserId).removeBank(BankEnum.PRIVATBANK);
+                                    break;
+                                }
                             } else {
                                 profiles.getProfileSettings(chatUserId).addBank(BankEnum.PRIVATBANK);
-                                if (i==size-1){ break;}
+                                if (i == size - 1) {
+                                    break;
+                                }
                             }
                         }
-
                         break;
                     case "MONOBANK":
-
+                        String saved1 = String.valueOf(profiles.getProfileSettings(chatUserId).getBanks());
+                        String[] split1 = saved1.split(",");
                         for (int i = 0; i < size; i++) {
-                            String saved = String.valueOf(profiles.getProfileSettings(chatUserId).getBanks());
-                            String[] split = saved.split(",");
-                            if (split[i].contains("MONOBANK")) {
-                                if (size!=1){
-                                profiles.getProfileSettings(chatUserId).removeBank(BankEnum.MONOBANK);
-                                break;}
+                            if (split1[i].contains("MONOBANK")) {
+                                if (size != 1) {
+                                    profiles.getProfileSettings(chatUserId).removeBank(BankEnum.MONOBANK);
+                                    break;
+                                }
                             } else {
                                 profiles.getProfileSettings(chatUserId).addBank(BankEnum.MONOBANK);
-                                if (i==size-1){ break;}
+                                if (i == size - 1) {
+                                    break;
+                                }
                             }
                         }
                         break;
                     case "NBU":
+                        String saved2 = String.valueOf(profiles.getProfileSettings(chatUserId).getBanks());
+                        String[] split2 = saved2.split(",");
                         for (int i = 0; i < size; i++) {
-                            String saved = String.valueOf(profiles.getProfileSettings(chatUserId).getBanks());
-                            String[] split = saved.split(",");
-                            if (split[i].contains("NBU")) {
-                                if (size!=1){
-                                profiles.getProfileSettings(chatUserId).removeBank(BankEnum.NBU);
-                               break;}
+                            if (split2[i].contains("NBU")) {
+                                if (size != 1) {
+                                    profiles.getProfileSettings(chatUserId).removeBank(BankEnum.NBU);
+                                    break;
+                                }
                             } else {
                                 profiles.getProfileSettings(chatUserId).addBank(BankEnum.NBU);
-                                if (i==size-1){ break;}
-
+                                if (i == size - 1) {
+                                    break;
+                                }
                             }
                         }
                         break;
                     case "start_page":
                         break;
                 }
-
                 List<List<InlineKeyboardButton>> button = new ArrayList<>();
                 for (BankEnum bankEnum : BankEnum.values()) {
                     button.add(Arrays.asList(InlineKeyboardButton.builder()
@@ -277,7 +289,11 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .callbackData("Bank_enum:" + String.valueOf(bankEnum))
                             .build()));
                 }
-
+                button.add(List.of(InlineKeyboardButton
+                        .builder()
+                        .text("Назад")
+                        .callbackData("Settings")
+                        .build()));
                 try {
                     execute(EditMessageReplyMarkup.builder()
                             .chatId(chatUserId)
@@ -289,18 +305,81 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 }
                 break;
 
-
             case "currencies":
+                int sizeCurrencies = profiles.getProfileSettings(chatUserId).getCurrencies().size();
+                String parametrCurrencies = param[1];
+
+                switch (parametrCurrencies) {
+                    case "USD":
+                        String savedC1 = String.valueOf(profiles.getProfileSettings(chatUserId).getCurrencies());
+                        String[] split = savedC1.split(",");
+                        for (int i = 0; i < sizeCurrencies; i++) {
+                            if (split[i].contains("USD")) {
+                                if (sizeCurrencies != 1) {
+                                    profiles.getProfileSettings(chatUserId).removeCurrency(CurrencyEnum.USD);
+                                    break;
+                                }
+                            } else {
+                                profiles.getProfileSettings(chatUserId).addCurrency(CurrencyEnum.USD);
+                                if (i == sizeCurrencies - 1) {
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case "RUB":
+                        String savedC2 = String.valueOf(profiles.getProfileSettings(chatUserId).getCurrencies());
+                        String[] splitC2 = savedC2.split(",");
+                        for (int i = 0; i < sizeCurrencies; i++) {
+                            if (splitC2[i].contains("RUB")) {
+                                if (sizeCurrencies != 1) {
+                                    profiles.getProfileSettings(chatUserId).removeCurrency(CurrencyEnum.RUB);
+                                    break;
+                                }
+                            } else {
+                                profiles.getProfileSettings(chatUserId).addCurrency(CurrencyEnum.RUB);
+                                if (i == sizeCurrencies - 1) {
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case "EUR":
+                        String savedC3 = String.valueOf(profiles.getProfileSettings(chatUserId).getCurrencies());
+                        String[] splitC3 = savedC3.split(",");
+                        for (int i = 0; i < sizeCurrencies; i++) {
+
+                            if (splitC3[i].contains("EUR")) {
+                                if (sizeCurrencies != 1) {
+                                    profiles.getProfileSettings(chatUserId).removeCurrency(CurrencyEnum.EUR);
+                                    break;
+                                }
+                            } else {
+                                profiles.getProfileSettings(chatUserId).addCurrency(CurrencyEnum.EUR);
+                                if (i == sizeCurrencies - 1) {
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case "start_page":
+                        break;
+                }
                 List<List<InlineKeyboardButton>> button2 = new ArrayList<>();
                 for (CurrencyEnum currencyEnum : CurrencyEnum.values()) {
                     if (!currencyEnum.equals(CurrencyEnum.UAH)) {
                         button2.add(Arrays.asList(InlineKeyboardButton.builder()
                                 .text(getCurrencyEnumButton(currencyEnum.name(),
                                         callbackQuery.getMessage().getChatId().toString()))
-                                .callbackData(String.valueOf(currencyEnum))
+                                .callbackData("currencies:" + String.valueOf(currencyEnum))
                                 .build()));
                     }
                 }
+                button2.add(List.of(InlineKeyboardButton
+                        .builder()
+                        .text("Назад")
+                        .callbackData("Settings")
+                        .build()));
                 try {
                     execute(EditMessageReplyMarkup.builder()
                             .chatId(chatUserId)
@@ -354,6 +433,27 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+            case "Start":
+                try {
+                    List<List<InlineKeyboardButton>> buttons1 = new ArrayList<>();
+                    buttons1.add(Arrays.asList(InlineKeyboardButton.builder()
+                            .callbackData("Get")
+                            .text("Получить инфо")
+                            .build()));
+                    buttons1.add(Arrays.asList(InlineKeyboardButton.builder()
+                            .text("Настройки")
+                            .callbackData("Settings")
+                            .build()));
+                    execute(
+                            SendMessage.builder()
+                                    .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
+                                    .chatId(chatUserId)
+                                    .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons1).build())
+                                    .build());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+
+                }
         }
     }
 
@@ -383,8 +483,22 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     }
 
     private String getCurrencyEnumButton(String current, String chatId) {
-        String saved = String.valueOf(profiles.getProfileSettings(chatId).getCurrencies());
-        return saved.equals("[" + current + "]") ? "✅ " + current : current + "";
+        int size = profiles.getProfileSettings(chatId).getCurrencies().size();
+        String result = "";
+
+        for (int i = 0; i < size; i++) {
+            String saved = String.valueOf(profiles.getProfileSettings(chatId).getCurrencies());
+            String[] split = saved.split(",");
+            if (split[i].contains(current)) {
+                result = "✅ " + current;
+            } else {
+                result = current;
+            }
+            if (result.contains("✅ ")) {
+                return result;
+            }
+        }
+        return result;
     }
 
     public static void main(String[] args) throws TelegramApiException {
