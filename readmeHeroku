@@ -1,0 +1,51 @@
+Как подключить проект на Heroku:
+1. Добавить в корень проекта файл system.properties, где указать версию Java, под которой должен собираться проект на Heroku. Если используется версия Java 8, то неоябзателене
+2. Добавить в POM.xml:
+ а) строку <version>3.8.1</version> там где блок с maven-compiler-plugin
+            <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <version>3.8.1</version>
+                 <configuration>
+                     <source>16</source>
+                     <target>16</target>
+                 </configuration>
+             </plugin>
+
+ б) Добавить блок в <plugins>
+               <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>appassembler-maven-plugin</artifactId>
+                 <version>2.1.0</version>
+                 <configuration>
+                     <assembleDirectory>target</assembleDirectory>
+                     <programs>
+                         <program>
+                             <mainClass>CurrencyTelegramBot</mainClass>
+                             <name>currencyBot</name>
+                         </program>
+                     </programs>
+                 </configuration>
+                 <executions>
+                     <execution>
+                         <phase>package</phase>
+                         <goals>
+                             <goal>assemble</goal>
+                         </goals>
+                     </execution>
+                 </executions>
+             </plugin>
+ Здесь CurrencyTelegramBot - имя Main класса; currencyBot - имя пакета, который будет запускать на Heroku. Используется ниже в файле Procfile
+
+ в) добавить строку <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> в раздел <properties>...</properties>
+ г) удалить все дубли в <dependencies>
+
+3. Добавить файл Procfile со строкой
+worker: sh target/bin/currencyBot
+currencyBot должен совпадать со значением <name>...</name> из п 2.б
+
+4. На сайте Heroku после регистрации, подключения репозитория Github и успешного деплоя приложения:
+ а) на странице Settings в блоке Config Vars добавить две переменные botName и botToken с соответствующими значениями
+ б) на странице Resources в блоке Dynos происходит запустить приложение
+
+

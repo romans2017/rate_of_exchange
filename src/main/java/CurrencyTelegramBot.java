@@ -36,18 +36,26 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     public CurrencyTelegramBot() throws Exception {
         super();
 
+        //для heroku - получаем из переменных окружения
+        String botNameLoc = System.getenv().get("botName");
+        String botTokenLoc = System.getenv().get("botToken");
+
         /*
         имя и токен бота должны хранится в текстовом файле \src\main\resources\botCredentials.ctxt
         в файле должна быть одна строка, в которой имя бота и токен разделены пробелом. Например:
         MyBot 12341241:gebsdfsbsdfbdsf
         Если файла не будет или файл не подойдет под указанные условия, то будет исключение, бот не запустится
          */
-        try (BufferedReader bufferedReader = new BufferedReader(
-                new FileReader("src/main/resources/botCredentials.ctxt"))) {
-            String[] botCredentials = bufferedReader.readLine().split(" ");
-            botName = botCredentials[0];
-            botToken = botCredentials[1];
+        if (botNameLoc == null || botTokenLoc == null) {
+            try (BufferedReader bufferedReader = new BufferedReader(
+                    new FileReader("src/main/resources/botCredentials.ctxt"))) {
+                String[] botCredentials = bufferedReader.readLine().split(" ");
+                botNameLoc = botCredentials[0];
+                botTokenLoc = botCredentials[1];
+            }
         }
+        botName = botNameLoc;
+        botToken = botTokenLoc;
 
         //чтение (если есть откуда), создание дефолтных и запись в файл по расписанию профилей пользователей с настройками
         profiles = Profiles.getInstance();
@@ -71,14 +79,6 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        //     currentProfileSettings - объект, хранящий настройки текущего пользователя
-        /*if (update.hasMessage()) {
-            ProfileSettings currentProfileSettings = profiles.getProfileSettings(update.getMessage().getChatId().toString());
-            currentProfileSettings
-                    .addBank(BankEnum.MONOBANK)
-                    .addBank(BankEnum.NBU)
-                    .addCurrency(CurrencyEnum.EUR);
-        }*/
         if (update.hasCallbackQuery()) {
             callBackQueryHandler(update.getCallbackQuery());
         } else if (update.hasMessage()) {
