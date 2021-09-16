@@ -19,7 +19,7 @@ public class Profiles implements Serializable {
      */
     public static Profiles getInstance() {
         if (instance == null) {
-            try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(".\\src\\main\\resources\\profiles.dat"))) {
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream("src/main/resources/profiles.dat"))) {
                 instance = (Profiles) objectInputStream.readObject();
             } catch (IOException | ClassNotFoundException e) {
                 instance = new Profiles();
@@ -63,7 +63,7 @@ public class Profiles implements Serializable {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(".\\src\\main\\resources\\profiles.dat"))) {
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("src/main/resources/profiles.dat"))) {
                     objectOutputStream.writeObject(instance);
                 } catch (IOException ignored) {
                 }
