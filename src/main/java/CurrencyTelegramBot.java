@@ -48,7 +48,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
          */
         if (botNameLoc == null || botTokenLoc == null) {
             try (BufferedReader bufferedReader = new BufferedReader(
-                    new FileReader("src/main/resources/botCredentials.ctxt"))) {
+                    new FileReader("src/main/botCredentials.ctxt"))) {
                 String[] botCredentials = bufferedReader.readLine().split(" ");
                 botNameLoc = botCredentials[0];
                 botTokenLoc = botCredentials[1];
