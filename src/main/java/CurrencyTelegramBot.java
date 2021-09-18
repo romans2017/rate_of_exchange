@@ -130,7 +130,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                     List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
                     buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
                             .text("Кол-во знаков после запятой")
-                            .callbackData("Number:" + "2")
+                            .callbackData("Number:" + profiles.getProfileSettings(chatUserId).getAfterComma())
                             .build())));
                     buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
                             .text("Банк")
