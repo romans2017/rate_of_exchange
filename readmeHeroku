@@ -48,4 +48,9 @@ currencyBot должен совпадать со значением <name>...</n
  а) на странице Settings в блоке Config Vars добавить две переменные botName и botToken с соответствующими значениями
  б) на странице Resources в блоке Dynos происходит запустить приложение
 
+5. Чтобы настроить сохранение Profiles в облако Amazon (heroku у себя файлы не хранит) нужно как в п.4 добавить три переменные:
+- AWS_ACCESS_KEY_ID - ключ юзера IAM, под которым подключаться к Amazon
+- AWS_SECRET_ACCESS_KEY - секретный ключ юзера IAM, под которым подключаться к Amazon
+- AWS_REGION = EU_CENTRAL_1
+
 
