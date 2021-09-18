@@ -89,8 +89,8 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
 
     private void messageHandler(Message message) {
         if (message.hasText()) {
+            String chatUserId = message.getChatId().toString();
             if (message.getText().equals("/start")) {
-                String chatId = message.getChatId().toString();
                 try {
                     List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
                     buttons.add(Arrays.asList(InlineKeyboardButton.builder()
@@ -104,14 +104,60 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                     execute(
                             SendMessage.builder()
                                     .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
-                                    .chatId(chatId)
+                                    .chatId(chatUserId)
                                     .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
                                     .build());
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
 
                 }
+            } else if (message.getText().matches(".+:00")) {
+                int hour = Integer.parseInt(message
+                        .getText()
+                        .replaceAll(":00", "")
+                        .replaceAll("✅", "")
+                        .trim());
+                profiles.getProfileSettings(chatUserId).setHourNotification(hour);
+                createMenuSettings(chatUserId);
+            } else if (message.getText().equals("Выключить уведомления")) {
+                profiles.getProfileSettings(chatUserId).setHourNotification(-100);
+                createMenuSettings(chatUserId);
             }
+        }
+    }
+
+    private void createMenuSettings(String chatUserId) {
+        try {
+            List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
+            buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
+                    .text("Кол-во знаков после запятой")
+                    .callbackData("Number:" + profiles.getProfileSettings(chatUserId).getAfterComma())
+                    .build())));
+            buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
+                    .text("Банк")
+                    .callbackData("Bank_enum:" + "start_page")
+                    .build())));
+            buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
+                    .text("Валюты")
+                    .callbackData("currencies:" + "start_page")
+                    .build())));
+            buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                    .text("Время оповещений")
+                    .callbackData("Time_of_notification")
+                    .build()));
+            buttons.add(Arrays.asList(InlineKeyboardButton.builder()
+                    .text("Назад")
+                    .callbackData("Start")
+                    .build()));
+
+            execute(
+                    SendMessage.builder()
+                            .chatId(chatUserId)
+                            .text("Настройки")
+                            .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
+                            .build());
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 
@@ -126,38 +172,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
 
         switch (action) {
             case "Settings":
-                try {
-                    List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-                    buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
-                            .text("Кол-во знаков после запятой")
-                            .callbackData("Number:" + profiles.getProfileSettings(chatUserId).getAfterComma())
-                            .build())));
-                    buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
-                            .text("Банк")
-                            .callbackData("Bank_enum:" + "start_page")
-                            .build())));
-                    buttons.add(Collections.singletonList((InlineKeyboardButton.builder()
-                            .text("Валюты")
-                            .callbackData("currencies:" + "start_page")
-                            .build())));
-                    buttons.add(Arrays.asList(InlineKeyboardButton.builder()
-                            .text("Время оповещений")
-                            .callbackData("Time_of_notification")
-                            .build()));
-                    buttons.add(Arrays.asList(InlineKeyboardButton.builder()
-                            .text("Назад")
-                            .callbackData("Start")
-                            .build()));
-
-                    execute(
-                            SendMessage.builder()
-                                    .chatId(chatUserId)
-                                    .text("Настройки")
-                                    .replyMarkup(InlineKeyboardMarkup.builder().keyboard(buttons).build())
-                                    .build());
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
+                createMenuSettings(chatUserId);
                 break;
             case "Get":
                 try {
@@ -399,25 +414,29 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
 
                 List<KeyboardRow> keyboard = new ArrayList<>();
 
+                int definedHour = profiles.getProfileSettings(chatUserId).getHourNotification();
+                String prefix = "";
                 int startHour = 9;
                 int shiftHour = 0;
                 for (int i = 0; i < 3; i++) {
                     KeyboardRow keyboardRow = new KeyboardRow();
                     for (int j = startHour + shiftHour; j < startHour + shiftHour + 3; j++) {
+                        prefix = j == definedHour ? "✅ " : "";
                         keyboardRow.add(KeyboardButton.builder()
-                                .text(j + ":00")
+                                .text(prefix + j + ":00")
                                 .build());
                     }
                     shiftHour += 3;
                     keyboard.add(keyboardRow);
                 }
-
                 KeyboardRow keyboardFourthRow = new KeyboardRow();
+                prefix = definedHour == 18 ? "✅ " : "";
                 keyboardFourthRow.add(KeyboardButton.builder()
-                        .text("18:00")
+                        .text(prefix + "18:00")
                         .build());
+                prefix = definedHour == -100 ? "✅ " : "";
                 keyboardFourthRow.add(KeyboardButton.builder()
-                        .text("Выключить уведомления")
+                        .text(prefix + "Выключить уведомления")
                         .build());
 
                 keyboard.add(keyboardFourthRow);
@@ -433,6 +452,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
+                break;
             case "Start":
                 try {
                     List<List<InlineKeyboardButton>> buttons1 = new ArrayList<>();
