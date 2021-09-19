@@ -1,6 +1,7 @@
 import bankApi.BankEnum;
 import bankApi.CurrencyEnum;
 import facade.CashApiRequests;
+import notifier.NotifTimer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,13 +11,13 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import userProfiles.ProfileSettings;
 import userProfiles.Profiles;
 
 import java.io.BufferedReader;
@@ -31,7 +32,6 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     private final String botName;
     private final String botToken;
     private final Profiles profiles;
-    private final CashApiRequests cashApiRequests;
 
     public CurrencyTelegramBot() throws Exception {
         super();
@@ -62,9 +62,11 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         profiles.SchedulerSaveToFile();
 
         //запрос банков и запись ответов в мапу-кэш по расписанию
-        cashApiRequests = CashApiRequests.getInstance();
+        CashApiRequests cashApiRequests = CashApiRequests.getInstance();
         cashApiRequests.cashing();
 
+        NotifTimer timer = new NotifTimer(this, profiles);
+        timer.startNotifying();
     }
 
     @Override
@@ -111,19 +113,42 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                     e.printStackTrace();
 
                 }
-            } else if (message.getText().matches(".+:00")) {
-                int hour = Integer.parseInt(message
-                        .getText()
-                        .replaceAll(":00", "")
-                        .replaceAll("✅", "")
-                        .trim());
+            } else if (message.getText().matches(".+:00") || message.getText().equals("Выключить уведомления")) {
+                int hour;
+                if (message.getText().matches(".+:00")) {
+                    hour = Integer.parseInt(message
+                            .getText()
+                            .replaceAll(":00", "")
+                            .replaceAll("✅", "")
+                            .trim());
+                } else {
+                    hour = -100;
+                }
                 profiles.getProfileSettings(chatUserId).setHourNotification(hour);
+
+                //отображение меню настройки
                 createMenuSettings(chatUserId);
-            } else if (message.getText().equals("Выключить уведомления")) {
-                profiles.getProfileSettings(chatUserId).setHourNotification(-100);
-                createMenuSettings(chatUserId);
+
+                //удаление клавиатуры
+                ReplyKeyboardRemove keyboardMarkup = ReplyKeyboardRemove.builder().removeKeyboard(true).build();
+                try {
+                    execute(
+                            SendMessage.builder()
+                                    .text(message.getText())
+                                    .chatId(chatUserId)
+                                    .replyMarkup(keyboardMarkup)
+                                    .build());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+
+                }
             }
         }
+
+        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+        replyKeyboardMarkup.setResizeKeyboard(true);
+        replyKeyboardMarkup.setSelective(true);
+        replyKeyboardMarkup.setOneTimeKeyboard(true);
     }
 
     private void createMenuSettings(String chatUserId) {
@@ -415,7 +440,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 List<KeyboardRow> keyboard = new ArrayList<>();
 
                 int definedHour = profiles.getProfileSettings(chatUserId).getHourNotification();
-                String prefix = "";
+                String prefix;
                 int startHour = 9;
                 int shiftHour = 0;
                 for (int i = 0; i < 3; i++) {

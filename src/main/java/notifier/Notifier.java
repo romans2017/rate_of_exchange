@@ -16,8 +16,8 @@ import java.util.concurrent.ConcurrentMap;
 
 public class Notifier {
 
-    private TelegramLongPollingBot bot;
-    private Profiles profiles;
+    private final TelegramLongPollingBot bot;
+    private final Profiles profiles;
 
     public Notifier(TelegramLongPollingBot bot, Profiles profiles) {
         this.bot = bot;
