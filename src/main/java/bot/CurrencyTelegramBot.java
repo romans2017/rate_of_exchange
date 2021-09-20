@@ -84,13 +84,13 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
     @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        //new Thread(() -> {
+        new Thread(() -> {
             if (update.hasCallbackQuery()) {
                 callBackQueryHandler(update.getCallbackQuery());
             } else if (update.hasMessage()) {
                 messageHandler(update.getMessage());
             }
-        //}).start();
+        }).start();
     }
 
 
