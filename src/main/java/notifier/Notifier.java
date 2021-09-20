@@ -1,9 +1,6 @@
 package notifier;
 
-import bankApi.BankEnum;
-import bankApi.CurrencyEnum;
 import facade.CashApiRequests;
-import facade.CurrencyRate;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -11,8 +8,6 @@ import userProfiles.ProfileSettings;
 import userProfiles.Profiles;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class Notifier {
 
