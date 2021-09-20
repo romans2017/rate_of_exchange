@@ -1,5 +1,3 @@
-package bot;
-
 import bankApi.BankEnum;
 import bankApi.CurrencyEnum;
 import facade.CashApiRequests;
