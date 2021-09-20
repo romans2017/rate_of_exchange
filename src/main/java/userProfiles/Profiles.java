@@ -1,6 +1,7 @@
 package userProfiles;
 
 import lombok.SneakyThrows;
+import services.Shedule;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
@@ -9,9 +10,13 @@ import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.waiters.S3Waiter;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Profiles implements Serializable {
 
@@ -142,21 +147,19 @@ public class Profiles implements Serializable {
      * сохраняет текущий экземпляр Profiles в сериализованный файл по определенному расписанию (каждые 5 минут)
      */
     public void SchedulerSaveToFile() {
-        Timer timer = new Timer(true);
-        timer.schedule(new TimerTask() {
-            @Override
-            @SneakyThrows
-            public void run() {
-                if (System.getenv().get("botName") == null) {
-                    try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("src/main/resources/profiles.dat"))) {
-                        objectOutputStream.writeObject(instance);
-                    }
-                } else {
-                    SaveToAwsAmazon();
+        ScheduledExecutorService timer = Shedule.getInstance().getScheduledExecutorService();
+        Runnable task = () -> {
+            if (System.getenv().get("botName") == null) {
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("src/main/resources/profiles.dat"))) {
+                    objectOutputStream.writeObject(instance);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            } else {
+                SaveToAwsAmazon();
             }
-        }, 1000L, 5L * 60L * 1000L);
-
+        };
+        timer.scheduleAtFixedRate(task, 1L, 5L * 5L, TimeUnit.SECONDS);
     }
 
     public void setProfileSettings(String chatId, ProfileSettings profileSettings) {

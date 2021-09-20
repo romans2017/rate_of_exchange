@@ -1,6 +1,9 @@
+package bot;
+
 import bankApi.BankEnum;
 import bankApi.CurrencyEnum;
 import facade.CashApiRequests;
+import lombok.SneakyThrows;
 import notifier.NotifTimer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -17,7 +20,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-
 import userProfiles.Profiles;
 
 import java.io.BufferedReader;
@@ -79,17 +81,20 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         return botToken;
     }
 
+    @SneakyThrows
     @Override
     public void onUpdateReceived(Update update) {
-        if (update.hasCallbackQuery()) {
-            callBackQueryHandler(update.getCallbackQuery());
-        } else if (update.hasMessage()) {
-            messageHandler(update.getMessage());
-        }
+        new Thread(() -> {
+            if (update.hasCallbackQuery()) {
+                callBackQueryHandler(update.getCallbackQuery());
+            } else if (update.hasMessage()) {
+                messageHandler(update.getMessage());
+            }
+        }).start();
     }
 
 
-    private void messageHandler(Message message) {
+    public void messageHandler(Message message) {
         if (message.hasText()) {
             String chatUserId = message.getChatId().toString();
             if (message.getText().equals("/start")) {
@@ -103,7 +108,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .text("Настройки")
                             .callbackData("Settings")
                             .build()));
-                    execute(
+                    executeAsync(
                             SendMessage.builder()
                                     .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
                                     .chatId(chatUserId)
@@ -132,7 +137,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 //удаление клавиатуры
                 ReplyKeyboardRemove keyboardMarkup = ReplyKeyboardRemove.builder().removeKeyboard(true).build();
                 try {
-                    execute(
+                    executeAsync(
                             SendMessage.builder()
                                     .text(message.getText())
                                     .chatId(chatUserId)
@@ -144,11 +149,6 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 }
             }
         }
-
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        replyKeyboardMarkup.setResizeKeyboard(true);
-        replyKeyboardMarkup.setSelective(true);
-        replyKeyboardMarkup.setOneTimeKeyboard(true);
     }
 
     private void createMenuSettings(String chatUserId) {
@@ -175,7 +175,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                     .callbackData("Start")
                     .build()));
 
-            execute(
+            executeAsync(
                     SendMessage.builder()
                             .chatId(chatUserId)
                             .text("Настройки")
@@ -186,7 +186,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void callBackQueryHandler(CallbackQuery callbackQuery) {
+    public void callBackQueryHandler(CallbackQuery callbackQuery) {
 
         String[] param = callbackQuery.getData().split(":");
         String action = param[0];
@@ -210,7 +210,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                                     .text("Настройки")
                                     .callbackData("Settings")
                                     .build()));
-                    execute(SendMessage.builder()
+                    executeAsync(SendMessage.builder()
                             .text(CashApiRequests
                                     .getNotificationForUser(Profiles.getInstance().getProfileSettings(chatUserId)))
                             .chatId(chatUserId)
@@ -252,7 +252,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                         .callbackData("Settings")
                         .build()));
                 try {
-                    execute(
+                    executeAsync(
                             EditMessageReplyMarkup.builder()
                                     .chatId(chatUserId)
                                     .messageId(messageUserId)
@@ -335,7 +335,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                         .callbackData("Settings")
                         .build()));
                 try {
-                    execute(EditMessageReplyMarkup.builder()
+                    executeAsync(EditMessageReplyMarkup.builder()
                             .chatId(chatUserId)
                             .messageId(messageUserId)
                             .replyMarkup(InlineKeyboardMarkup.builder().keyboard(button).build())
@@ -421,7 +421,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                         .callbackData("Settings")
                         .build()));
                 try {
-                    execute(EditMessageReplyMarkup.builder()
+                    executeAsync(EditMessageReplyMarkup.builder()
                             .chatId(chatUserId)
                             .messageId(messageUserId)
                             .replyMarkup(InlineKeyboardMarkup.builder().keyboard(button2).build())
@@ -468,7 +468,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                 replyKeyboardMarkup.setKeyboard(keyboard);
 
                 try {
-                    execute(
+                    executeAsync(
                             SendMessage.builder()
                                     .chatId(chatUserId)
                                     .text("Выберите время уведомлений")
@@ -489,7 +489,7 @@ public class CurrencyTelegramBot extends TelegramLongPollingBot {
                             .text("Настройки")
                             .callbackData("Settings")
                             .build()));
-                    execute(
+                    executeAsync(
                             SendMessage.builder()
                                     .text("Добро пожаловать. Этот бот поможет отслеживать актуальные курсы валют.")
                                     .chatId(chatUserId)

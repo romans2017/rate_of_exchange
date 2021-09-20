@@ -1,13 +1,18 @@
 package facade;
 
-import bankApi.*;
+import bankApi.BankEnum;
+import bankApi.CurrencyEnum;
+import services.Shedule;
 import userProfiles.ProfileSettings;
-import userProfiles.Profiles;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Supplier;
 
 public class CashApiRequests {
 
@@ -30,30 +35,21 @@ public class CashApiRequests {
 
     //запрос банков по расписанию
     public void cashing() {
-        Timer timer = new Timer(true);
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Arrays.stream(BankEnum.values())
-                        .map(item -> {
-                            try {
-                                return Map.entry(item, (CurrencyRate) item.getMethod().invoke(null));
-                            } catch (Exception ignored) {
-                                return Map.entry(item, new CurrencyRate());
-                            }
-                        })
-                        .forEach(item -> {
-                            locker.writeLock().lock();
-                            cashedData.put(item.getKey(), item.getValue());
-                            locker.writeLock().unlock();
-                        });
-                /*Profiles
-                        .getInstance()
-                        .getAllProfileSettings()
-                        .values()
-                        .forEach(item -> System.out.println(getNotificationForUser(item)));*/
-            }
-        }, 1000L, 10L * 60L * 1000L);
+        ScheduledExecutorService timer = Shedule.getInstance().getScheduledExecutorService();
+        Runnable task = () -> Arrays.stream(BankEnum.values())
+                .map(item -> {
+                    try {
+                        return Map.entry(item, (CurrencyRate) item.getMethod().invoke(null));
+                    } catch (Exception ignored) {
+                        return Map.entry(item, new CurrencyRate());
+                    }
+                })
+                .forEach(item -> {
+                    locker.writeLock().lock();
+                    cashedData.put(item.getKey(), item.getValue());
+                    locker.writeLock().unlock();
+                });
+        timer.scheduleAtFixedRate(task, 1L, 10L * 60L, TimeUnit.SECONDS);
     }
 
     //получение ответа банка из кэша

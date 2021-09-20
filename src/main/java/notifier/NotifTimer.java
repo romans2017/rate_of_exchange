@@ -1,12 +1,12 @@
 package notifier;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import services.Shedule;
 import userProfiles.Profiles;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.concurrent.Executors;
+import java.util.TimeZone;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -20,7 +20,7 @@ public class NotifTimer {
     public void startNotifying() {
         TimeZone timeZoneUa = TimeZone.getTimeZone("Europe/Kiev");
 
-        ScheduledExecutorService timer = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService timer = Shedule.getInstance().getScheduledExecutorService();
         Runnable task = () -> {
             ZonedDateTime currentTime = ZonedDateTime.now(timeZoneUa.toZoneId());
             int hour = currentTime.getHour();
