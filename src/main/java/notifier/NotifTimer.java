@@ -5,6 +5,7 @@ import services.Shedule;
 import userProfiles.Profiles;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.TimeZone;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,6 @@ public class NotifTimer {
 
         ZonedDateTime currentTime = ZonedDateTime.now(timeZoneUa.toZoneId());
         ZonedDateTime nextHour = currentTime.withHour(currentTime.getHour() + 1).withMinute(0).withSecond(0);
-        //timer.scheduleAtFixedRate(task, ChronoUnit.SECONDS.between(currentTime, nextHour), 3600L, TimeUnit.SECONDS);
-        timer.scheduleAtFixedRate(task, 10, 60L, TimeUnit.SECONDS);
+        timer.scheduleAtFixedRate(task, ChronoUnit.SECONDS.between(currentTime, nextHour), 3600L, TimeUnit.SECONDS);
     }
 }

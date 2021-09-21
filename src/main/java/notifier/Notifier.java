@@ -36,9 +36,9 @@ public class Notifier {
         Map<String, ProfileSettings> settings = profiles.getAllProfileSettings();
         for (String chatId: settings.keySet()) {
             ProfileSettings value = settings.get(chatId);
-            //if (value.getHourNotification() == hour) {
+            if (value.getHourNotification() == hour) {
                 sendOneNotification(chatId, value, hour);
-            //}
+            }
         }
     }
 }
