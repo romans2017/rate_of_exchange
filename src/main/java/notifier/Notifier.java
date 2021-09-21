@@ -19,11 +19,11 @@ public class Notifier {
         this.profiles = profiles;
     }
 
-    private void sendOneNotification(String chatId, ProfileSettings settings) {
+    private void sendOneNotification(String chatId, ProfileSettings settings, int hour) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         String output = CashApiRequests.getNotificationForUser(settings);
-        sendMessage.setText(output);
+        sendMessage.setText(hour + " " + output);
         try {
             bot.execute(sendMessage);
         }
@@ -36,9 +36,9 @@ public class Notifier {
         Map<String, ProfileSettings> settings = profiles.getAllProfileSettings();
         for (String chatId: settings.keySet()) {
             ProfileSettings value = settings.get(chatId);
-            if (value.getHourNotification() == hour) {
-                sendOneNotification(chatId, value);
-            }
+            //if (value.getHourNotification() == hour) {
+                sendOneNotification(chatId, value, hour);
+            //}
         }
     }
 }
