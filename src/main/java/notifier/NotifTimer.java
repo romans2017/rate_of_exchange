@@ -30,7 +30,7 @@ public class NotifTimer {
         };
 
         ZonedDateTime currentTime = ZonedDateTime.now();
-        ZonedDateTime nextHour = currentTime.withHour(currentTime.getHour() + 1).withMinute(0).withSecond(0);
+        ZonedDateTime nextHour = currentTime.withHour(Math.min(currentTime.getHour() + 1, 23)).withMinute(0).withSecond(0);
         timer.scheduleAtFixedRate(task, ChronoUnit.SECONDS.between(currentTime, nextHour), 3600L, TimeUnit.SECONDS);
     }
 }
