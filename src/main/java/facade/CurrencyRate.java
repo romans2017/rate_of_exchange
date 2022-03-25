@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
-//класс нормализации ответа банка
 public class CurrencyRate {
 
     private final Map<CurrencyEnum, Rate> mapCurrency;
@@ -15,10 +14,9 @@ public class CurrencyRate {
         this.mapCurrency = new TreeMap<>();
     }
 
-    //класс структуры курса валюты
     public static class Rate {
-        private float rateSale; //курс продажи
-        private float ratePurchase; //курс покупки
+        private float rateSale;
+        private float ratePurchase;
 
         public Rate(float rateSale, float ratePurchase) {
             this.rateSale = rateSale;
@@ -58,9 +56,9 @@ public class CurrencyRate {
         mapCurrency.forEach((key, value) -> sb
                         .append(key.getValue())
                         .append(" - ")
-                        .append("продажа: ")
+                        .append("buy: ")
                         .append(value.getRateSale())
-                        .append(", покупка: ")
+                        .append(", sale: ")
                         .append(value.getRatePurchase())
                         .append("\n"));
         return sb.toString();

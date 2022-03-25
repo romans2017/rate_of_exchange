@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class CashApiRequests {
 
-    private final Map<BankEnum, CurrencyRate> cashedData; //сортированная по ключу мапа мап - ключ основной мапы: банк; ключ вложенной (мапы из value) - валюта
+    private final Map<BankEnum, CurrencyRate> cashedData;
     private final ReadWriteLock locker;
     private static CashApiRequests instance;
 
@@ -25,7 +25,6 @@ public class CashApiRequests {
         locker = new ReentrantReadWriteLock(true);
     }
 
-    //получает экземпляр Profiles из сериализованного файла или, если файла нет - создает новый
     public static CashApiRequests getInstance() {
         if (instance == null) {
             instance = new CashApiRequests();
@@ -33,7 +32,6 @@ public class CashApiRequests {
         return instance;
     }
 
-    //запрос банков по расписанию
     public void cashing() {
         ScheduledExecutorService timer = Shedule.getInstance().getScheduledExecutorService();
         Runnable task = () -> Arrays.stream(BankEnum.values())
@@ -52,7 +50,6 @@ public class CashApiRequests {
         timer.scheduleAtFixedRate(task, 1L, 10L * 60L, TimeUnit.SECONDS);
     }
 
-    //получение ответа банка из кэша
     public CurrencyRate getBankResponse(BankEnum bank) {
 
         locker.readLock().lock();
@@ -63,7 +60,6 @@ public class CashApiRequests {
         return response;
     }
 
-    //получение ответов всех банков
     public Map<BankEnum, CurrencyRate> getAllBankResponse() {
 
         locker.readLock().lock();
@@ -92,17 +88,17 @@ public class CashApiRequests {
             CurrencyRate bankResponse = cashApiRequests.getBankResponse(bank);
             for (CurrencyEnum currency : profileSettings.getCurrencies()) {
                 stringBuilder
-                        .append("Курс в ")
+                        .append("Rate in ")
                         .append(bank.getValue())
                         .append(": ")
                         .append(currency.getValue())
                         .append("/")
                         .append(CurrencyEnum.UAH.getValue())
                         .append("\n")
-                        .append(" Покупка: ")
+                        .append(" Buy: ")
                         .append(String.format(patternRounding, bankResponse.getRate(currency).getRateSale()))
                         .append("\n")
-                        .append(" Продажа: ")
+                        .append(" Sale: ")
                         .append(String.format(patternRounding, bankResponse.getRate(currency).getRatePurchase()))
                         .append("\n\n");
             }

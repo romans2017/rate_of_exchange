@@ -6,10 +6,13 @@ import facade.CurrencyRate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 public class NbuApi {
 
@@ -43,11 +46,11 @@ public class NbuApi {
     }
 
     public static class NbuCurrency {
-        int r030;               //Цифровой ISO код валюты
-        String txt;             //Название валюты на украинском
-        float rate;             //Цена НБУ
-        String cc;              //Буквенный ISO код валюты
-        String exchangedate;    //Дата обмена
+        int r030;
+        String txt;
+        float rate;
+        String cc;
+        String exchangedate;
 
         public int getR030() {
             return r030;

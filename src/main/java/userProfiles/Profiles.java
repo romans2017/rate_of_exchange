@@ -35,6 +35,10 @@ import java.util.stream.Collectors;
 
 public class Profiles implements Serializable {
 
+    private final static String GOOGLE_CREDENTIALS = System.getenv().get("GOOGLE_CREDENTIALS");
+    private final static String GOOGLE_APPLICATION_NAME = System.getenv().get("GOOGLE_APPLICATION_NAME");
+    private final static String FILE_ID = "profiles_" + System.getenv().get("botName") + ".dat";
+
     private static Profiles instance;
     private final ConcurrentMap<String, ProfileSettings> mapProfiles;
 
@@ -44,7 +48,7 @@ public class Profiles implements Serializable {
 
     private static Profiles getFromAwsAmazon() {
         String bucketName = "profile-settings";
-        String fileName = "profiles_" + System.getenv().get("botName") + ".dat";
+        String fileName = FILE_ID;
         Region region = Region.EU_CENTRAL_1;
 
         S3Client s3Client = S3Client.builder()
@@ -69,8 +73,8 @@ public class Profiles implements Serializable {
     }
 
     private static Profiles getFromGoogle() throws GeneralSecurityException, IOException {
-        String googleCredentials = System.getenv().get("GOOGLE_CREDENTIALS");
-        String googleApplicationName = System.getenv().get("GOOGLE_APPLICATION_NAME");
+        String googleCredentials = GOOGLE_CREDENTIALS;
+        String googleApplicationName = GOOGLE_APPLICATION_NAME;
 
         if (Files.exists(Paths.get(googleCredentials))) {
             googleCredentials = new String(Files.readAllBytes(Paths.get(googleCredentials)));
@@ -130,7 +134,7 @@ public class Profiles implements Serializable {
     }
 
     /**
-     * получает экземпляр Profiles из сериализованного файла или, если файла нет - создает новый
+     * get Profiles from serialized file or create new if file doesn't exist
      */
     public static Profiles getInstance() {
         if (instance == null) {
@@ -154,7 +158,7 @@ public class Profiles implements Serializable {
     }
 
     /**
-     * получает ProfileSettings из мапы или, если нет - создает новый, возвращает его и добавляет в мапу
+     * get ProfileSettings from map or create new if ProfileSettings doesn't exist, return it and put into map
      */
     public ProfileSettings getProfileSettings(String chatId) {
         return Optional
@@ -164,7 +168,7 @@ public class Profiles implements Serializable {
 
 
     /**
-     * получает все ProfileSettings из мапы
+     * get all ProfileSettings from map
      */
     public Map<String, ProfileSettings> getAllProfileSettings() {
         return new HashMap<>(mapProfiles);
@@ -238,56 +242,56 @@ public class Profiles implements Serializable {
         JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
         NetHttpTransport netHttpTransport = GoogleNetHttpTransport.newTrustedTransport();
 
-        try (InputStream stringStream = new ByteArrayInputStream(googleCredentials.getBytes(StandardCharsets.UTF_8))) {
-            GoogleCredentials credentials = GoogleCredentials
-                    .fromStream(stringStream)
-                    .createScoped(DriveScopes.DRIVE_FILE);
+        InputStream stringStream = new ByteArrayInputStream(googleCredentials.getBytes(StandardCharsets.UTF_8));
+        GoogleCredentials credentials = GoogleCredentials
+                .fromStream(stringStream)
+                .createScoped(DriveScopes.DRIVE_FILE);
+        stringStream.close();
 
-            Drive driveService = new Drive.Builder(netHttpTransport, jsonFactory, new HttpCredentialsAdapter(credentials))
-                    .setApplicationName(googleApplicationName)
-                    .build();
+        Drive driveService = new Drive.Builder(netHttpTransport, jsonFactory, new HttpCredentialsAdapter(credentials))
+                .setApplicationName(googleApplicationName)
+                .build();
 
-            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-                objectOutputStream.writeObject(instance);
-                try (ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {
-                    InputStreamContent mediaContent = new InputStreamContent("application/octet-stream", inputStream);
-                    com.google.api.services.drive.model.File fileMeta = new com.google.api.services.drive.model.File();
-                    fileMeta.setName(fileId);
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(instance);
+            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {
+                InputStreamContent mediaContent = new InputStreamContent("application/octet-stream", inputStream);
+                com.google.api.services.drive.model.File fileMeta = new com.google.api.services.drive.model.File();
+                fileMeta.setName(fileId);
 
-                    List<com.google.api.services.drive.model.File> files = driveService
+                List<com.google.api.services.drive.model.File> files = driveService
+                        .files()
+                        .list()
+                        .execute()
+                        .getFiles()
+                        .stream()
+                        .filter(item -> item.getName().equals(fileId))
+                        .collect(Collectors.toList());
+
+                if (files.size() > 0) {
+                    driveService
                             .files()
-                            .list()
-                            .execute()
-                            .getFiles()
-                            .stream()
-                            .filter(item -> item.getName().equals(fileId))
-                            .collect(Collectors.toList());
-
-                    if (files.size() > 0) {
-                        driveService
-                                .files()
-                                .update(files.get(0).getId(), fileMeta, mediaContent)
-                                .execute();
-                    } else {
-                        driveService
-                                .files()
-                                .create(fileMeta, mediaContent)
-                                .execute();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    outputStream.close();
+                            .update(files.get(0).getId(), fileMeta, mediaContent)
+                            .execute();
+                } else {
+                    driveService
+                            .files()
+                            .create(fileMeta, mediaContent)
+                            .execute();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                outputStream.close();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * сохраняет текущий экземпляр Profiles в сериализованный файл по определенному расписанию (каждые 5 минут)
+     * save current Profiles to serialized file on shedule (every 5 minutes)
      */
     public void SchedulerSaveToFile() {
         ScheduledExecutorService timer = Shedule.getInstance().getScheduledExecutorService();

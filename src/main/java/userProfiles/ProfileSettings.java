@@ -5,13 +5,15 @@ import bankApi.CurrencyEnum;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProfileSettings implements Serializable {
-    private int afterComma; //кол-во знаков после запятой
-    private Set<BankEnum> banks; //список банков
-    private Set<CurrencyEnum> currencies; // список валют
-    private int hourNotification; //установленный час оповещения
+    private int afterComma;
+    private Set<BankEnum> banks;
+    private Set<CurrencyEnum> currencies;
+    private int hourNotification;
 
     public ProfileSettings() {
         banks = new HashSet<>();
@@ -23,7 +25,7 @@ public class ProfileSettings implements Serializable {
     }
 
     /**
-     * устанавливает количество знаков после запятой в профиль пользователя
+     * set number in decimal part into user profile
      */
     public synchronized ProfileSettings setAfterComma(int afterComma) {
         this.afterComma = afterComma;
@@ -31,7 +33,7 @@ public class ProfileSettings implements Serializable {
     }
 
     /**
-     * устанавливает банки в профиль пользователя
+     * set banks into user profile
      */
     public synchronized ProfileSettings setBanks(@NotNull Collection<BankEnum> banks) {
         this.banks = new HashSet<>(banks);
@@ -39,7 +41,7 @@ public class ProfileSettings implements Serializable {
     }
 
     /**
-     * добавляет банк в профиль пользователя
+     * add bank into user profile
      */
     public synchronized ProfileSettings addBank(@NotNull BankEnum bank) {
         this.banks = new HashSet<>(banks); //на случай, если banks инициализировалось как List.of(...)
@@ -48,7 +50,7 @@ public class ProfileSettings implements Serializable {
     }
 
     /**
-     * удаляет банк из профиля пользователя
+     * remove bank form user profile
      */
     public synchronized ProfileSettings removeBank(@NotNull BankEnum bank) {
         this.banks = new HashSet<>(banks); //на случай, если banks инициализировалось как List.of(...)
@@ -57,7 +59,7 @@ public class ProfileSettings implements Serializable {
     }
 
     /**
-     * устанавливает валюты в профиль пользователя
+     * set currencies into user profile
      */
     public synchronized ProfileSettings setCurrencies(@NotNull Collection<CurrencyEnum> currencies) {
         this.currencies = new HashSet<>(currencies);
@@ -65,25 +67,25 @@ public class ProfileSettings implements Serializable {
     }
 
     /**
-     * добавляет валюту в профиль пользователя
+     * add currency into user profile
      */
     public synchronized ProfileSettings addCurrency(@NotNull CurrencyEnum currency) {
-        this.currencies = new HashSet<>(currencies); //на случай, если currencies инициализировалось как List.of(...)
+        this.currencies = new HashSet<>(currencies);
         this.currencies.add(currency);
         return this;
     }
 
     /**
-     * удаляет валюту из профиля пользователя
+     * remove currency from user profile
      */
     public synchronized ProfileSettings removeCurrency(@NotNull CurrencyEnum currency) {
-        this.currencies = new HashSet<>(currencies); //на случай, если currencies инициализировалось как List.of(...)
+        this.currencies = new HashSet<>(currencies);
         this.currencies.remove(currency);
         return this;
     }
 
     /**
-     * устанавливает час расписания в профиль пользователя
+     * set notification hour into user profile
      */
     public synchronized ProfileSettings setHourNotification(int hourNotification) {
         this.hourNotification = hourNotification;

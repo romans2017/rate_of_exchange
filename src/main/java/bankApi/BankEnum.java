@@ -5,12 +5,12 @@ import lombok.SneakyThrows;
 import java.lang.reflect.Method;
 
 public enum BankEnum {
-    PRIVATBANK("Приватбанк", PrivatBankApi.class),
-    MONOBANK("Монобанк", MonoBankApi.class),
-    NBU("НБУ", NbuApi.class);
+    PRIVATBANK("Privatbank", PrivatBankApi.class),
+    MONOBANK("Monobank", MonoBankApi.class),
+    NBU("NBU", NbuApi.class);
 
     private final String value;
-    private final Method method; //свойство для хранения метода, вызывающего по АПИ соответствующий банк
+    private final Method method; //method which calls API of corresponding bank
 
     @SneakyThrows
     BankEnum(String value, Class<?> cl) {
