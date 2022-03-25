@@ -4,7 +4,7 @@ public enum CurrencyEnum {
     USD("USD", 840),
     UAH("UAH", 980),
     EUR("EUR", 978),
-    RUB("RUB", 643);
+    PLN("PLN", 985);
 
     String value;
     int isoCode;

@@ -5,16 +5,20 @@ import facade.CurrencyRate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class PrivatBankApi {
 
     private static final String GET_URL =
-            "https://api.privatbank.ua/p24api/exchange_rates?json&date="; //Архив курсов валют ПриватБанка
+            "https://api.privatbank.ua/p24api/exchange_rates?json&date=";
     private static final URI uri =
             URI.create(GET_URL + new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
 
@@ -50,12 +54,12 @@ public class PrivatBankApi {
         List<ExchangeRate> exchangeRate;
 
         static class ExchangeRate {
-            String baseCurrency; //Базовая валюта (UAH)
-            String currency; // Валюта сделки (USD, EUR, RUR, CHF, GBP, PLZ, SEK, XAU, CAD)
-            float saleRateNB; //курс продажи НБУ
-            float purchaseRateNB; //курс покупки НБУ
-            float saleRate; //курс продажи Привата
-            float purchaseRate; //курс покупки Привата
+            String baseCurrency;
+            String currency;
+            float saleRateNB;
+            float purchaseRateNB;
+            float saleRate;
+            float purchaseRate;
 
             public String getBaseCurrency() {
                 return baseCurrency;
