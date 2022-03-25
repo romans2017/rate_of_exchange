@@ -22,4 +22,4 @@ To save in AWS ([S3 Service](https://aws.amazon.com/s3)) you should define envir
 To save in [Google Drive](https://developers.google.com/drive/api/guides/enable-drive-api):
 - GOOGLE_CREDENTIALS - JSON string or path to file with JSON string which contains credentials to [Google Drive](https://developers.google.com/workspace/guides/create-credentials#service-account)
 
-Active bot - @currensyChatBot
+Active bot - [@currensyChatBot](https://t.me/currensyChatBot)
